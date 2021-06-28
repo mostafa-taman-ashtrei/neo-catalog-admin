@@ -3,8 +3,7 @@ import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
 
 import { lists } from './schema';
-
-let sessionSecret = process.env.SESSION_SECRET;
+let sessionSecret = "abc123xyz7899876543210zfwxuvaouoauaoueoueoa";
 
 if (!sessionSecret) {
   if (process.env.NODE_ENV === 'production') {

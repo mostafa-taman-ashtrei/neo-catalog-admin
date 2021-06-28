@@ -1,5 +1,5 @@
-import { relationship, text } from "@keystone-next/fields";
-import { list } from "@keystone-next/keystone/schema";
+import { relationship, text } from '@keystone-next/fields';
+import { list } from '@keystone-next/keystone/schema';
 
 const tagList = list({
     ui: {
@@ -12,6 +12,6 @@ const tagList = list({
             many: true,
         }),
     },
-})
+});
 
 export default tagList;

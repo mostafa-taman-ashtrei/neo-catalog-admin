@@ -28,6 +28,28 @@ type User {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
+  products(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Product!]
+  _productsMeta(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productsCount instead."
+    )
+  productsCount(where: ProductWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -101,6 +123,21 @@ input UserWhereInput {
    condition must be false for all nodes
   """
   posts_none: PostWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  products_every: ProductWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  products_some: ProductWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  products_none: ProductWhereInput
 }
 
 input UserWhereUniqueInput {
@@ -133,12 +170,20 @@ input UserUpdateInput {
   email: String
   password: String
   posts: PostRelateToManyInput
+  products: ProductRelateToManyInput
 }
 
 input PostRelateToManyInput {
   create: [PostCreateInput]
   connect: [PostWhereUniqueInput]
   disconnect: [PostWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input ProductRelateToManyInput {
+  create: [ProductCreateInput]
+  connect: [ProductWhereUniqueInput]
+  disconnect: [ProductWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -152,6 +197,7 @@ input UserCreateInput {
   email: String
   password: String
   posts: PostRelateToManyInput
+  products: ProductRelateToManyInput
 }
 
 input UsersCreateInput {
@@ -317,6 +363,145 @@ input PostCreateInput {
 
 input PostsCreateInput {
   data: PostCreateInput
+}
+
+"""
+ A keystone list
+"""
+type Product {
+  id: ID!
+  title: String
+  description: String
+  price: Float
+  created_at: String
+  status: String
+  owner: User
+}
+
+input ProductWhereInput {
+  AND: [ProductWhereInput!]
+  OR: [ProductWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  title: String
+  title_not: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  title_i: String
+  title_not_i: String
+  title_contains_i: String
+  title_not_contains_i: String
+  title_starts_with_i: String
+  title_not_starts_with_i: String
+  title_ends_with_i: String
+  title_not_ends_with_i: String
+  title_in: [String]
+  title_not_in: [String]
+  description: String
+  description_not: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  description_i: String
+  description_not_i: String
+  description_contains_i: String
+  description_not_contains_i: String
+  description_starts_with_i: String
+  description_not_starts_with_i: String
+  description_ends_with_i: String
+  description_not_ends_with_i: String
+  description_in: [String]
+  description_not_in: [String]
+  price: Float
+  price_not: Float
+  price_lt: Float
+  price_lte: Float
+  price_gt: Float
+  price_gte: Float
+  price_in: [Float]
+  price_not_in: [Float]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  status: String
+  status_not: String
+  status_in: [String]
+  status_not_in: [String]
+  owner: UserWhereInput
+  owner_is_null: Boolean
+}
+
+input ProductWhereUniqueInput {
+  id: ID
+}
+
+enum SortProductsBy {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  description_ASC
+  description_DESC
+  price_ASC
+  price_DESC
+  created_at_ASC
+  created_at_DESC
+  status_ASC
+  status_DESC
+}
+
+input ProductOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  description: OrderDirection
+  price: OrderDirection
+  created_at: OrderDirection
+  status: OrderDirection
+}
+
+input ProductUpdateInput {
+  title: String
+  description: String
+  price: Float
+  created_at: String
+  status: String
+  owner: UserRelateToOneInput
+}
+
+input ProductsUpdateInput {
+  id: ID!
+  data: ProductUpdateInput
+}
+
+input ProductCreateInput {
+  title: String
+  description: String
+  price: Float
+  created_at: String
+  status: String
+  owner: UserRelateToOneInput
+}
+
+input ProductsCreateInput {
+  data: ProductCreateInput
 }
 
 """
@@ -500,6 +685,36 @@ type Mutation {
   deletePosts(ids: [ID!]): [Post]
 
   """
+   Create a single Product item.
+  """
+  createProduct(data: ProductCreateInput): Product
+
+  """
+   Create multiple Product items.
+  """
+  createProducts(data: [ProductsCreateInput]): [Product]
+
+  """
+   Update a single Product item by ID.
+  """
+  updateProduct(id: ID!, data: ProductUpdateInput): Product
+
+  """
+   Update multiple Product items by ID.
+  """
+  updateProducts(data: [ProductsUpdateInput]): [Product]
+
+  """
+   Delete a single Product item by ID.
+  """
+  deleteProduct(id: ID!): Product
+
+  """
+   Delete multiple Product items by ID.
+  """
+  deleteProducts(ids: [ID!]): [Product]
+
+  """
    Create a single Tag item.
   """
   createTag(data: TagCreateInput): Tag
@@ -638,6 +853,41 @@ type Query {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
+
+  """
+   Search for all Product items which match the where clause.
+  """
+  allProducts(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Product!]
+
+  """
+   Search for the Product item with the matching ID.
+  """
+  Product(where: ProductWhereUniqueInput!): Product
+
+  """
+   Perform a meta-query on all Product items which match the where clause.
+  """
+  _allProductsMeta(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productsCount instead."
+    )
+  productsCount(where: ProductWhereInput! = {}): Int
 
   """
    Search for all Tag items which match the where clause.

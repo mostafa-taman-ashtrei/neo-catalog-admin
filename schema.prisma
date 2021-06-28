@@ -9,11 +9,12 @@ generator client {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   name     String?
-  email    String? @unique
+  email    String?   @unique
   password String?
-  posts    Post[]  @relation("Post_author")
+  posts    Post[]    @relation("Post_author")
+  products Product[] @relation("Product_owner")
 }
 
 model Post {
@@ -27,6 +28,19 @@ model Post {
   tags        Tag[]     @relation("Post_tags_Tag_posts")
 
   @@index([authorId])
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  title       String?
+  description String?
+  price       Float?
+  created_at  DateTime?
+  status      String?
+  owner       User?     @relation("Product_owner", fields: [ownerId], references: [id])
+  ownerId     Int?      @map("owner")
+
+  @@index([ownerId])
 }
 
 model Tag {

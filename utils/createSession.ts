@@ -1,6 +1,6 @@
-import { statelessSessions } from "@keystone-next/keystone/session";
+import { statelessSessions } from '@keystone-next/keystone/session';
 
-let sessionSecret = process.env.SESSION_SECRET || "abc123xyz7899876543210zfwxuvaouoauaoueoueoa";
+let sessionSecret = process.env.SESSION_SECRET || 'abc123xyz7899876543210zfwxuvaouoauaoueoueoa';
 
 if (!sessionSecret) {
     if (process.env.NODE_ENV === 'production') {
@@ -12,7 +12,7 @@ if (!sessionSecret) {
     }
 }
 
-let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+const sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
 
 const session = statelessSessions({
     maxAge: sessionMaxAge,

@@ -6,7 +6,9 @@
     "dev": "keystone-next dev",
     "start": "keystone-next start",
     "build": "keystone-next build",
-    "postinstall": "keystone-next postinstall"
+    "postinstall": "keystone-next postinstall",
+    "lint": "eslint . --ext .tsx,.ts",
+    "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
     "@keystone-next/auth": "^27.0.0",
@@ -18,6 +20,9 @@
   },
   "devDependencies": {
     "@keystone-next/types": "^20.0.1",
-    "eslint": "^7.29.0"
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "eslint": "^7.29.0",
+    "eslint-plugin-react": "^7.24.0"
   }
 }

@@ -1,5 +1,5 @@
-import { text, select, timestamp, relationship } from "@keystone-next/fields";
-import { list } from "@keystone-next/keystone/schema";
+import { text, select, timestamp, relationship } from '@keystone-next/fields';
+import { list } from '@keystone-next/keystone/schema';
 import { document } from '@keystone-next/fields-document';
 
 const postList = list({

@@ -1,21 +1,11 @@
 import { config } from '@keystone-next/keystone/schema';
-import { statelessSessions } from '@keystone-next/keystone/session';
 import { createAuth } from '@keystone-next/auth';
+import { config as envConfig } from 'dotenv';
 
 import { lists } from './schema';
-let sessionSecret = "abc123xyz7899876543210zfwxuvaouoauaoueoueoa";
+import session from './utils/createSession';
 
-if (!sessionSecret) {
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error(
-      'The SESSION_SECRET environment variable must be set in production'
-    );
-  } else {
-    sessionSecret = '-- DEV COOKIE SECRET; CHANGE ME --';
-  }
-}
-
-let sessionMaxAge = 60 * 60 * 24 * 30; // 30 days
+envConfig();
 
 const { withAuth } = createAuth({
   listKey: 'User',
@@ -27,10 +17,6 @@ const { withAuth } = createAuth({
   },
 });
 
-const session = statelessSessions({
-  maxAge: sessionMaxAge,
-  secret: sessionSecret,
-});
 
 export default withAuth(
   config({
@@ -44,7 +30,7 @@ export default withAuth(
     lists,
     session,
     server: {
-      port: 3001
+      port: parseInt(process.env.PORT!) || 3001
     }
   })
 );

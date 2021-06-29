@@ -9,12 +9,12 @@ generator client {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   name     String?
-  email    String?   @unique
+  email    String?  @unique
   password String?
-  posts    Post[]    @relation("Post_author")
-  products Product[] @relation("Product_owner")
+  posts    Post[]   @relation("Post_author")
+  reviews  Review[] @relation("Review_customer")
 }
 
 model Post {
@@ -31,20 +31,61 @@ model Post {
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
-  title       String?
-  description String?
-  price       Float?
-  created_at  DateTime?
-  status      String?
-  owner       User?     @relation("Product_owner", fields: [ownerId], references: [id])
-  ownerId     Int?      @map("owner")
+  id              Int           @id @default(autoincrement())
+  title           String?
+  description     String?
+  price           Decimal?      @postgresql.Decimal(18, 4)
+  created_at      DateTime?
+  updated_at      DateTime?
+  deleted_at      DateTime?
+  is_deleted      String?
+  status          String?
+  quantitiy       Int?
+  manufacturer    Manufacturer? @relation("Product_manufacturer", fields: [manufacturerId], references: [id])
+  manufacturerId  Int?          @map("manufacturer")
+  products_orderd Int?
+  reviews         Review[]      @relation("Review_product")
+  image_filesize  Int?
+  image_extension String?
+  image_width     Int?
+  image_height    Int?
+  image_mode      String?
+  image_id        String?
+  discount        Int?
+  category        String?
+  rating          Int?
 
-  @@index([ownerId])
+  @@index([manufacturerId])
 }
 
 model Tag {
   id    Int     @id @default(autoincrement())
   name  String?
   posts Post[]  @relation("Post_tags_Tag_posts")
+}
+
+model Review {
+  id          Int       @id @default(autoincrement())
+  created_at  DateTime?
+  updated_at  DateTime?
+  deleted_at  DateTime?
+  is_deleted  String?
+  review_text String?
+  product     Product?  @relation("Review_product", fields: [productId], references: [id])
+  productId   Int?      @map("product")
+  customer    User?     @relation("Review_customer", fields: [customerId], references: [id])
+  customerId  Int?      @map("customer")
+
+  @@index([productId])
+  @@index([customerId])
+}
+
+model Manufacturer {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime?
+  updated_at DateTime?
+  deleted_at DateTime?
+  is_deleted String?
+  name       String?
+  products   Product[] @relation("Product_manufacturer")
 }

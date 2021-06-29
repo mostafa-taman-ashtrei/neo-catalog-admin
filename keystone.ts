@@ -27,6 +27,14 @@ export default withAuth(
         ui: {
             isAccessAllowed: (context) => !!context.session?.data,
         },
+        // images will be stored locally for now temporarily
+        images: {
+            upload: 'local',
+            local: {
+                storagePath: 'public/images',
+                baseUrl: '/images',
+            },
+        },
         lists,
         session,
         server: {

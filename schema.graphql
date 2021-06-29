@@ -28,28 +28,28 @@ type User {
       reason: "This query will be removed in a future version. Please use postsCount instead."
     )
   postsCount(where: PostWhereInput! = {}): Int
-  products(
-    where: ProductWhereInput! = {}
+  reviews(
+    where: ReviewWhereInput! = {}
     search: String
-    sortBy: [SortProductsBy!]
+    sortBy: [SortReviewsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductOrderByInput!]! = []
+    orderBy: [ReviewOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Product!]
-  _productsMeta(
-    where: ProductWhereInput! = {}
+  ): [Review!]
+  _reviewsMeta(
+    where: ReviewWhereInput! = {}
     search: String
-    sortBy: [SortProductsBy!]
+    sortBy: [SortReviewsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductOrderByInput!]! = []
+    orderBy: [ReviewOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
     @deprecated(
-      reason: "This query will be removed in a future version. Please use productsCount instead."
+      reason: "This query will be removed in a future version. Please use reviewsCount instead."
     )
-  productsCount(where: ProductWhereInput! = {}): Int
+  reviewsCount(where: ReviewWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -127,17 +127,17 @@ input UserWhereInput {
   """
    condition must be true for all nodes
   """
-  products_every: ProductWhereInput
+  reviews_every: ReviewWhereInput
 
   """
    condition must be true for at least 1 node
   """
-  products_some: ProductWhereInput
+  reviews_some: ReviewWhereInput
 
   """
    condition must be false for all nodes
   """
-  products_none: ProductWhereInput
+  reviews_none: ReviewWhereInput
 }
 
 input UserWhereUniqueInput {
@@ -170,7 +170,7 @@ input UserUpdateInput {
   email: String
   password: String
   posts: PostRelateToManyInput
-  products: ProductRelateToManyInput
+  reviews: ReviewRelateToManyInput
 }
 
 input PostRelateToManyInput {
@@ -180,10 +180,10 @@ input PostRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input ProductRelateToManyInput {
-  create: [ProductCreateInput]
-  connect: [ProductWhereUniqueInput]
-  disconnect: [ProductWhereUniqueInput]
+input ReviewRelateToManyInput {
+  create: [ReviewCreateInput]
+  connect: [ReviewWhereUniqueInput]
+  disconnect: [ReviewWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -197,7 +197,7 @@ input UserCreateInput {
   email: String
   password: String
   posts: PostRelateToManyInput
-  products: ProductRelateToManyInput
+  reviews: ReviewRelateToManyInput
 }
 
 input UsersCreateInput {
@@ -372,10 +372,68 @@ type Product {
   id: ID!
   title: String
   description: String
-  price: Float
+  price: String
   created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
   status: String
-  owner: User
+  quantitiy: Int
+  manufacturer: Manufacturer
+  products_orderd: Int
+  reviews(
+    where: ReviewWhereInput! = {}
+    search: String
+    sortBy: [SortReviewsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ReviewOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Review!]
+  _reviewsMeta(
+    where: ReviewWhereInput! = {}
+    search: String
+    sortBy: [SortReviewsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ReviewOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use reviewsCount instead."
+    )
+  reviewsCount(where: ReviewWhereInput! = {}): Int
+  image: ImageFieldOutput
+  discount: Int
+  category: String
+  rating: Int
+}
+
+interface ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
 }
 
 input ProductWhereInput {
@@ -425,14 +483,12 @@ input ProductWhereInput {
   description_not_ends_with_i: String
   description_in: [String]
   description_not_in: [String]
-  price: Float
-  price_not: Float
-  price_lt: Float
-  price_lte: Float
-  price_gt: Float
-  price_gte: Float
-  price_in: [Float]
-  price_not_in: [Float]
+  price: String
+  price_not: String
+  price_lt: String
+  price_lte: String
+  price_gt: String
+  price_gte: String
   created_at: String
   created_at_not: String
   created_at_lt: String
@@ -441,12 +497,111 @@ input ProductWhereInput {
   created_at_gte: String
   created_at_in: [String]
   created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
   status: String
   status_not: String
   status_in: [String]
   status_not_in: [String]
-  owner: UserWhereInput
-  owner_is_null: Boolean
+  quantitiy: Int
+  quantitiy_not: Int
+  quantitiy_lt: Int
+  quantitiy_lte: Int
+  quantitiy_gt: Int
+  quantitiy_gte: Int
+  quantitiy_in: [Int]
+  quantitiy_not_in: [Int]
+  manufacturer: ManufacturerWhereInput
+  manufacturer_is_null: Boolean
+  products_orderd: Int
+  products_orderd_not: Int
+  products_orderd_lt: Int
+  products_orderd_lte: Int
+  products_orderd_gt: Int
+  products_orderd_gte: Int
+  products_orderd_in: [Int]
+  products_orderd_not_in: [Int]
+
+  """
+   condition must be true for all nodes
+  """
+  reviews_every: ReviewWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  reviews_some: ReviewWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  reviews_none: ReviewWhereInput
+  discount: Int
+  discount_not: Int
+  discount_lt: Int
+  discount_lte: Int
+  discount_gt: Int
+  discount_gte: Int
+  discount_in: [Int]
+  discount_not_in: [Int]
+  category: String
+  category_not: String
+  category_contains: String
+  category_not_contains: String
+  category_starts_with: String
+  category_not_starts_with: String
+  category_ends_with: String
+  category_not_ends_with: String
+  category_i: String
+  category_not_i: String
+  category_contains_i: String
+  category_not_contains_i: String
+  category_starts_with_i: String
+  category_not_starts_with_i: String
+  category_ends_with_i: String
+  category_not_ends_with_i: String
+  category_in: [String]
+  category_not_in: [String]
+  rating: Int
+  rating_not: Int
+  rating_lt: Int
+  rating_lte: Int
+  rating_gt: Int
+  rating_gte: Int
+  rating_in: [Int]
+  rating_not_in: [Int]
 }
 
 input ProductWhereUniqueInput {
@@ -464,8 +619,24 @@ enum SortProductsBy {
   price_DESC
   created_at_ASC
   created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
   status_ASC
   status_DESC
+  quantitiy_ASC
+  quantitiy_DESC
+  products_orderd_ASC
+  products_orderd_DESC
+  discount_ASC
+  discount_DESC
+  category_ASC
+  category_DESC
+  rating_ASC
+  rating_DESC
 }
 
 input ProductOrderByInput {
@@ -474,17 +645,52 @@ input ProductOrderByInput {
   description: OrderDirection
   price: OrderDirection
   created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
   status: OrderDirection
+  quantitiy: OrderDirection
+  products_orderd: OrderDirection
+  discount: OrderDirection
+  category: OrderDirection
+  rating: OrderDirection
 }
 
 input ProductUpdateInput {
   title: String
   description: String
-  price: Float
+  price: String
   created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
   status: String
-  owner: UserRelateToOneInput
+  quantitiy: Int
+  manufacturer: ManufacturerRelateToOneInput
+  products_orderd: Int
+  reviews: ReviewRelateToManyInput
+  image: ImageFieldInput
+  discount: Int
+  category: String
+  rating: Int
 }
+
+input ManufacturerRelateToOneInput {
+  create: ManufacturerCreateInput
+  connect: ManufacturerWhereUniqueInput
+  disconnect: ManufacturerWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input ImageFieldInput {
+  upload: Upload
+  ref: String
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
 
 input ProductsUpdateInput {
   id: ID!
@@ -494,10 +700,20 @@ input ProductsUpdateInput {
 input ProductCreateInput {
   title: String
   description: String
-  price: Float
+  price: String
   created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
   status: String
-  owner: UserRelateToOneInput
+  quantitiy: Int
+  manufacturer: ManufacturerRelateToOneInput
+  products_orderd: Int
+  reviews: ReviewRelateToManyInput
+  image: ImageFieldInput
+  discount: Int
+  category: String
+  rating: Int
 }
 
 input ProductsCreateInput {
@@ -613,6 +829,345 @@ input TagCreateInput {
 
 input TagsCreateInput {
   data: TagCreateInput
+}
+
+"""
+ A keystone list
+"""
+type Review {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  review_text: String
+  product: Product
+  customer: User
+}
+
+input ReviewWhereInput {
+  AND: [ReviewWhereInput!]
+  OR: [ReviewWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  review_text: String
+  review_text_not: String
+  review_text_contains: String
+  review_text_not_contains: String
+  review_text_starts_with: String
+  review_text_not_starts_with: String
+  review_text_ends_with: String
+  review_text_not_ends_with: String
+  review_text_i: String
+  review_text_not_i: String
+  review_text_contains_i: String
+  review_text_not_contains_i: String
+  review_text_starts_with_i: String
+  review_text_not_starts_with_i: String
+  review_text_ends_with_i: String
+  review_text_not_ends_with_i: String
+  review_text_in: [String]
+  review_text_not_in: [String]
+  product: ProductWhereInput
+  product_is_null: Boolean
+  customer: UserWhereInput
+  customer_is_null: Boolean
+}
+
+input ReviewWhereUniqueInput {
+  id: ID
+}
+
+enum SortReviewsBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  review_text_ASC
+  review_text_DESC
+}
+
+input ReviewOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  review_text: OrderDirection
+}
+
+input ReviewUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  review_text: String
+  product: ProductRelateToOneInput
+  customer: UserRelateToOneInput
+}
+
+input ProductRelateToOneInput {
+  create: ProductCreateInput
+  connect: ProductWhereUniqueInput
+  disconnect: ProductWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input ReviewsUpdateInput {
+  id: ID!
+  data: ReviewUpdateInput
+}
+
+input ReviewCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  review_text: String
+  product: ProductRelateToOneInput
+  customer: UserRelateToOneInput
+}
+
+input ReviewsCreateInput {
+  data: ReviewCreateInput
+}
+
+"""
+ A keystone list
+"""
+type Manufacturer {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  name: String
+  products(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Product!]
+  _productsMeta(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productsCount instead."
+    )
+  productsCount(where: ProductWhereInput! = {}): Int
+}
+
+input ManufacturerWhereInput {
+  AND: [ManufacturerWhereInput!]
+  OR: [ManufacturerWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  products_every: ProductWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  products_some: ProductWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  products_none: ProductWhereInput
+}
+
+input ManufacturerWhereUniqueInput {
+  id: ID
+}
+
+enum SortManufacturersBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  name_ASC
+  name_DESC
+}
+
+input ManufacturerOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  name: OrderDirection
+}
+
+input ManufacturerUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  name: String
+  products: ProductRelateToManyInput
+}
+
+input ProductRelateToManyInput {
+  create: [ProductCreateInput]
+  connect: [ProductWhereUniqueInput]
+  disconnect: [ProductWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input ManufacturersUpdateInput {
+  id: ID!
+  data: ManufacturerUpdateInput
+}
+
+input ManufacturerCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  name: String
+  products: ProductRelateToManyInput
+}
+
+input ManufacturersCreateInput {
+  data: ManufacturerCreateInput
 }
 
 """
@@ -743,6 +1298,66 @@ type Mutation {
    Delete multiple Tag items by ID.
   """
   deleteTags(ids: [ID!]): [Tag]
+
+  """
+   Create a single Review item.
+  """
+  createReview(data: ReviewCreateInput): Review
+
+  """
+   Create multiple Review items.
+  """
+  createReviews(data: [ReviewsCreateInput]): [Review]
+
+  """
+   Update a single Review item by ID.
+  """
+  updateReview(id: ID!, data: ReviewUpdateInput): Review
+
+  """
+   Update multiple Review items by ID.
+  """
+  updateReviews(data: [ReviewsUpdateInput]): [Review]
+
+  """
+   Delete a single Review item by ID.
+  """
+  deleteReview(id: ID!): Review
+
+  """
+   Delete multiple Review items by ID.
+  """
+  deleteReviews(ids: [ID!]): [Review]
+
+  """
+   Create a single Manufacturer item.
+  """
+  createManufacturer(data: ManufacturerCreateInput): Manufacturer
+
+  """
+   Create multiple Manufacturer items.
+  """
+  createManufacturers(data: [ManufacturersCreateInput]): [Manufacturer]
+
+  """
+   Update a single Manufacturer item by ID.
+  """
+  updateManufacturer(id: ID!, data: ManufacturerUpdateInput): Manufacturer
+
+  """
+   Update multiple Manufacturer items by ID.
+  """
+  updateManufacturers(data: [ManufacturersUpdateInput]): [Manufacturer]
+
+  """
+   Delete a single Manufacturer item by ID.
+  """
+  deleteManufacturer(id: ID!): Manufacturer
+
+  """
+   Delete multiple Manufacturer items by ID.
+  """
+  deleteManufacturers(ids: [ID!]): [Manufacturer]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -923,6 +1538,76 @@ type Query {
       reason: "This query will be removed in a future version. Please use tagsCount instead."
     )
   tagsCount(where: TagWhereInput! = {}): Int
+
+  """
+   Search for all Review items which match the where clause.
+  """
+  allReviews(
+    where: ReviewWhereInput! = {}
+    search: String
+    sortBy: [SortReviewsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ReviewOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Review!]
+
+  """
+   Search for the Review item with the matching ID.
+  """
+  Review(where: ReviewWhereUniqueInput!): Review
+
+  """
+   Perform a meta-query on all Review items which match the where clause.
+  """
+  _allReviewsMeta(
+    where: ReviewWhereInput! = {}
+    search: String
+    sortBy: [SortReviewsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ReviewOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use reviewsCount instead."
+    )
+  reviewsCount(where: ReviewWhereInput! = {}): Int
+
+  """
+   Search for all Manufacturer items which match the where clause.
+  """
+  allManufacturers(
+    where: ManufacturerWhereInput! = {}
+    search: String
+    sortBy: [SortManufacturersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ManufacturerOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Manufacturer!]
+
+  """
+   Search for the Manufacturer item with the matching ID.
+  """
+  Manufacturer(where: ManufacturerWhereUniqueInput!): Manufacturer
+
+  """
+   Perform a meta-query on all Manufacturer items which match the where clause.
+  """
+  _allManufacturersMeta(
+    where: ManufacturerWhereInput! = {}
+    search: String
+    sortBy: [SortManufacturersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ManufacturerOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use manufacturersCount instead."
+    )
+  manufacturersCount(where: ManufacturerWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

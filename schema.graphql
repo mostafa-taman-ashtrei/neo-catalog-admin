@@ -50,6 +50,28 @@ type User {
       reason: "This query will be removed in a future version. Please use reviewsCount instead."
     )
   reviewsCount(where: ReviewWhereInput! = {}): Int
+  orders(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Order!]
+  _ordersMeta(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use ordersCount instead."
+    )
+  ordersCount(where: OrderWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -138,6 +160,21 @@ input UserWhereInput {
    condition must be false for all nodes
   """
   reviews_none: ReviewWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  orders_every: OrderWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  orders_some: OrderWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  orders_none: OrderWhereInput
 }
 
 input UserWhereUniqueInput {
@@ -171,6 +208,7 @@ input UserUpdateInput {
   password: String
   posts: PostRelateToManyInput
   reviews: ReviewRelateToManyInput
+  orders: OrderRelateToManyInput
 }
 
 input PostRelateToManyInput {
@@ -187,6 +225,13 @@ input ReviewRelateToManyInput {
   disconnectAll: Boolean
 }
 
+input OrderRelateToManyInput {
+  create: [OrderCreateInput]
+  connect: [OrderWhereUniqueInput]
+  disconnect: [OrderWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
 input UsersUpdateInput {
   id: ID!
   data: UserUpdateInput
@@ -198,6 +243,7 @@ input UserCreateInput {
   password: String
   posts: PostRelateToManyInput
   reviews: ReviewRelateToManyInput
+  orders: OrderRelateToManyInput
 }
 
 input UsersCreateInput {
@@ -1174,6 +1220,437 @@ input ManufacturersCreateInput {
 }
 
 """
+ A keystone list
+"""
+type Order {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  order_total: Float
+  billing_postcode: String
+  billing_city: String
+  billing_country: String
+  delivery_street_address: String
+  currency: String
+  status: String
+  customer: User
+  orders_product(
+    where: OrdersProductWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrdersProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [OrdersProduct!]
+  _orders_productMeta(
+    where: OrdersProductWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrdersProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use orders_productCount instead."
+    )
+  orders_productCount(where: OrdersProductWhereInput! = {}): Int
+}
+
+input OrderWhereInput {
+  AND: [OrderWhereInput!]
+  OR: [OrderWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  order_total: Float
+  order_total_not: Float
+  order_total_lt: Float
+  order_total_lte: Float
+  order_total_gt: Float
+  order_total_gte: Float
+  order_total_in: [Float]
+  order_total_not_in: [Float]
+  billing_postcode: String
+  billing_postcode_not: String
+  billing_postcode_contains: String
+  billing_postcode_not_contains: String
+  billing_postcode_starts_with: String
+  billing_postcode_not_starts_with: String
+  billing_postcode_ends_with: String
+  billing_postcode_not_ends_with: String
+  billing_postcode_i: String
+  billing_postcode_not_i: String
+  billing_postcode_contains_i: String
+  billing_postcode_not_contains_i: String
+  billing_postcode_starts_with_i: String
+  billing_postcode_not_starts_with_i: String
+  billing_postcode_ends_with_i: String
+  billing_postcode_not_ends_with_i: String
+  billing_postcode_in: [String]
+  billing_postcode_not_in: [String]
+  billing_city: String
+  billing_city_not: String
+  billing_city_contains: String
+  billing_city_not_contains: String
+  billing_city_starts_with: String
+  billing_city_not_starts_with: String
+  billing_city_ends_with: String
+  billing_city_not_ends_with: String
+  billing_city_i: String
+  billing_city_not_i: String
+  billing_city_contains_i: String
+  billing_city_not_contains_i: String
+  billing_city_starts_with_i: String
+  billing_city_not_starts_with_i: String
+  billing_city_ends_with_i: String
+  billing_city_not_ends_with_i: String
+  billing_city_in: [String]
+  billing_city_not_in: [String]
+  billing_country: String
+  billing_country_not: String
+  billing_country_contains: String
+  billing_country_not_contains: String
+  billing_country_starts_with: String
+  billing_country_not_starts_with: String
+  billing_country_ends_with: String
+  billing_country_not_ends_with: String
+  billing_country_i: String
+  billing_country_not_i: String
+  billing_country_contains_i: String
+  billing_country_not_contains_i: String
+  billing_country_starts_with_i: String
+  billing_country_not_starts_with_i: String
+  billing_country_ends_with_i: String
+  billing_country_not_ends_with_i: String
+  billing_country_in: [String]
+  billing_country_not_in: [String]
+  delivery_street_address: String
+  delivery_street_address_not: String
+  delivery_street_address_contains: String
+  delivery_street_address_not_contains: String
+  delivery_street_address_starts_with: String
+  delivery_street_address_not_starts_with: String
+  delivery_street_address_ends_with: String
+  delivery_street_address_not_ends_with: String
+  delivery_street_address_i: String
+  delivery_street_address_not_i: String
+  delivery_street_address_contains_i: String
+  delivery_street_address_not_contains_i: String
+  delivery_street_address_starts_with_i: String
+  delivery_street_address_not_starts_with_i: String
+  delivery_street_address_ends_with_i: String
+  delivery_street_address_not_ends_with_i: String
+  delivery_street_address_in: [String]
+  delivery_street_address_not_in: [String]
+  currency: String
+  currency_not: String
+  currency_contains: String
+  currency_not_contains: String
+  currency_starts_with: String
+  currency_not_starts_with: String
+  currency_ends_with: String
+  currency_not_ends_with: String
+  currency_i: String
+  currency_not_i: String
+  currency_contains_i: String
+  currency_not_contains_i: String
+  currency_starts_with_i: String
+  currency_not_starts_with_i: String
+  currency_ends_with_i: String
+  currency_not_ends_with_i: String
+  currency_in: [String]
+  currency_not_in: [String]
+  status: String
+  status_not: String
+  status_in: [String]
+  status_not_in: [String]
+  customer: UserWhereInput
+  customer_is_null: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  orders_product_every: OrdersProductWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  orders_product_some: OrdersProductWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  orders_product_none: OrdersProductWhereInput
+}
+
+input OrderWhereUniqueInput {
+  id: ID
+}
+
+enum SortOrdersBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  order_total_ASC
+  order_total_DESC
+  billing_postcode_ASC
+  billing_postcode_DESC
+  billing_city_ASC
+  billing_city_DESC
+  billing_country_ASC
+  billing_country_DESC
+  delivery_street_address_ASC
+  delivery_street_address_DESC
+  currency_ASC
+  currency_DESC
+  status_ASC
+  status_DESC
+}
+
+input OrderOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  order_total: OrderDirection
+  billing_postcode: OrderDirection
+  billing_city: OrderDirection
+  billing_country: OrderDirection
+  delivery_street_address: OrderDirection
+  currency: OrderDirection
+  status: OrderDirection
+}
+
+input OrderUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  order_total: Float
+  billing_postcode: String
+  billing_city: String
+  billing_country: String
+  delivery_street_address: String
+  currency: String
+  status: String
+  customer: UserRelateToOneInput
+  orders_product: OrdersProductRelateToManyInput
+}
+
+input OrdersProductRelateToManyInput {
+  create: [OrdersProductCreateInput]
+  connect: [OrdersProductWhereUniqueInput]
+  disconnect: [OrdersProductWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input OrdersUpdateInput {
+  id: ID!
+  data: OrderUpdateInput
+}
+
+input OrderCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  order_total: Float
+  billing_postcode: String
+  billing_city: String
+  billing_country: String
+  delivery_street_address: String
+  currency: String
+  status: String
+  customer: UserRelateToOneInput
+  orders_product: OrdersProductRelateToManyInput
+}
+
+input OrdersCreateInput {
+  data: OrderCreateInput
+}
+
+"""
+ A keystone list
+"""
+type OrdersProduct {
+  id: ID!
+  product_title: String
+  product_quantity: Int
+  product_price: String
+  products_tax: String
+  products_final_price: String
+}
+
+input OrdersProductWhereInput {
+  AND: [OrdersProductWhereInput!]
+  OR: [OrdersProductWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  product_title: String
+  product_title_not: String
+  product_title_contains: String
+  product_title_not_contains: String
+  product_title_starts_with: String
+  product_title_not_starts_with: String
+  product_title_ends_with: String
+  product_title_not_ends_with: String
+  product_title_i: String
+  product_title_not_i: String
+  product_title_contains_i: String
+  product_title_not_contains_i: String
+  product_title_starts_with_i: String
+  product_title_not_starts_with_i: String
+  product_title_ends_with_i: String
+  product_title_not_ends_with_i: String
+  product_title_in: [String]
+  product_title_not_in: [String]
+  product_quantity: Int
+  product_quantity_not: Int
+  product_quantity_lt: Int
+  product_quantity_lte: Int
+  product_quantity_gt: Int
+  product_quantity_gte: Int
+  product_quantity_in: [Int]
+  product_quantity_not_in: [Int]
+  product_price: String
+  product_price_not: String
+  product_price_lt: String
+  product_price_lte: String
+  product_price_gt: String
+  product_price_gte: String
+  products_tax: String
+  products_tax_not: String
+  products_tax_lt: String
+  products_tax_lte: String
+  products_tax_gt: String
+  products_tax_gte: String
+  products_final_price: String
+  products_final_price_not: String
+  products_final_price_lt: String
+  products_final_price_lte: String
+  products_final_price_gt: String
+  products_final_price_gte: String
+}
+
+input OrdersProductWhereUniqueInput {
+  id: ID
+}
+
+enum SortOrdersProductsBy {
+  id_ASC
+  id_DESC
+  product_title_ASC
+  product_title_DESC
+  product_quantity_ASC
+  product_quantity_DESC
+  product_price_ASC
+  product_price_DESC
+  products_tax_ASC
+  products_tax_DESC
+  products_final_price_ASC
+  products_final_price_DESC
+}
+
+input OrdersProductOrderByInput {
+  id: OrderDirection
+  product_title: OrderDirection
+  product_quantity: OrderDirection
+  product_price: OrderDirection
+  products_tax: OrderDirection
+  products_final_price: OrderDirection
+}
+
+input OrdersProductUpdateInput {
+  product_title: String
+  product_quantity: Int
+  product_price: String
+  products_tax: String
+  products_final_price: String
+}
+
+input OrdersProductsUpdateInput {
+  id: ID!
+  data: OrdersProductUpdateInput
+}
+
+input OrdersProductCreateInput {
+  product_title: String
+  product_quantity: Int
+  product_price: String
+  products_tax: String
+  products_final_price: String
+}
+
+input OrdersProductsCreateInput {
+  data: OrdersProductCreateInput
+}
+
+"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -1361,6 +1838,66 @@ type Mutation {
    Delete multiple Manufacturer items by ID.
   """
   deleteManufacturers(ids: [ID!]): [Manufacturer]
+
+  """
+   Create a single Order item.
+  """
+  createOrder(data: OrderCreateInput): Order
+
+  """
+   Create multiple Order items.
+  """
+  createOrders(data: [OrdersCreateInput]): [Order]
+
+  """
+   Update a single Order item by ID.
+  """
+  updateOrder(id: ID!, data: OrderUpdateInput): Order
+
+  """
+   Update multiple Order items by ID.
+  """
+  updateOrders(data: [OrdersUpdateInput]): [Order]
+
+  """
+   Delete a single Order item by ID.
+  """
+  deleteOrder(id: ID!): Order
+
+  """
+   Delete multiple Order items by ID.
+  """
+  deleteOrders(ids: [ID!]): [Order]
+
+  """
+   Create a single OrdersProduct item.
+  """
+  createOrdersProduct(data: OrdersProductCreateInput): OrdersProduct
+
+  """
+   Create multiple OrdersProduct items.
+  """
+  createOrdersProducts(data: [OrdersProductsCreateInput]): [OrdersProduct]
+
+  """
+   Update a single OrdersProduct item by ID.
+  """
+  updateOrdersProduct(id: ID!, data: OrdersProductUpdateInput): OrdersProduct
+
+  """
+   Update multiple OrdersProduct items by ID.
+  """
+  updateOrdersProducts(data: [OrdersProductsUpdateInput]): [OrdersProduct]
+
+  """
+   Delete a single OrdersProduct item by ID.
+  """
+  deleteOrdersProduct(id: ID!): OrdersProduct
+
+  """
+   Delete multiple OrdersProduct items by ID.
+  """
+  deleteOrdersProducts(ids: [ID!]): [OrdersProduct]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -1611,6 +2148,76 @@ type Query {
       reason: "This query will be removed in a future version. Please use manufacturersCount instead."
     )
   manufacturersCount(where: ManufacturerWhereInput! = {}): Int
+
+  """
+   Search for all Order items which match the where clause.
+  """
+  allOrders(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Order!]
+
+  """
+   Search for the Order item with the matching ID.
+  """
+  Order(where: OrderWhereUniqueInput!): Order
+
+  """
+   Perform a meta-query on all Order items which match the where clause.
+  """
+  _allOrdersMeta(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use ordersCount instead."
+    )
+  ordersCount(where: OrderWhereInput! = {}): Int
+
+  """
+   Search for all OrdersProduct items which match the where clause.
+  """
+  allOrdersProducts(
+    where: OrdersProductWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrdersProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [OrdersProduct!]
+
+  """
+   Search for the OrdersProduct item with the matching ID.
+  """
+  OrdersProduct(where: OrdersProductWhereUniqueInput!): OrdersProduct
+
+  """
+   Perform a meta-query on all OrdersProduct items which match the where clause.
+  """
+  _allOrdersProductsMeta(
+    where: OrdersProductWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrdersProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use ordersProductsCount instead."
+    )
+  ordersProductsCount(where: OrdersProductWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

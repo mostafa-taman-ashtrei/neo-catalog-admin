@@ -4,7 +4,7 @@ import { list } from '@keystone-next/keystone/schema';
 const userList = list({
     ui: {
         listView: {
-            initialColumns: ['name', 'posts'],
+            initialColumns: ['name', 'orders', 'reviews'],
         },
     },
     fields: {
@@ -13,6 +13,7 @@ const userList = list({
         password: password({ isRequired: true }),
         posts: relationship({ ref: 'Post.author', many: true }),
         reviews: relationship({ ref: 'Review.customer', many: true }),
+        orders: relationship({ ref: 'Order.customer', many: true }),
     },
 });
 

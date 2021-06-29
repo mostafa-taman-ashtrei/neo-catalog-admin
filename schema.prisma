@@ -15,6 +15,7 @@ model User {
   password String?
   posts    Post[]   @relation("Post_author")
   reviews  Review[] @relation("Review_customer")
+  orders   Order[]  @relation("Order_customer")
 }
 
 model Post {
@@ -94,4 +95,34 @@ model Manufacturer {
   image_id        String?
   name            String?
   products        Product[] @relation("Product_manufacturer")
+}
+
+model Order {
+  id                      Int             @id @default(autoincrement())
+  created_at              DateTime?
+  updated_at              DateTime?
+  deleted_at              DateTime?
+  is_deleted              String?
+  order_total             Float?
+  billing_postcode        String?
+  billing_city            String?
+  billing_country         String?
+  delivery_street_address String?
+  currency                String?
+  status                  String?
+  customer                User?           @relation("Order_customer", fields: [customerId], references: [id])
+  customerId              Int?            @map("customer")
+  orders_product          OrdersProduct[] @relation("Order_orders_product_many")
+
+  @@index([customerId])
+}
+
+model OrdersProduct {
+  id                        Int      @id @default(autoincrement())
+  product_title             String?
+  product_quantity          Int?
+  product_price             Decimal? @postgresql.Decimal(18, 4)
+  products_tax              Decimal? @postgresql.Decimal(18, 4)
+  products_final_price      Decimal? @postgresql.Decimal(18, 4)
+  from_Order_orders_product Order[]  @relation("Order_orders_product_many")
 }

@@ -3,12 +3,14 @@ import { list } from '@keystone-next/keystone/schema';
 
 const tagList = list({
     ui: {
-        isHidden: true,
+        listView: {
+            initialColumns: ['name', 'products'],
+        },
     },
     fields: {
-        name: text(),
-        posts: relationship({
-            ref: 'Post.tags',
+        name: text({ isRequired: true }),
+        products: relationship({
+            ref: 'Product.tags',
             many: true,
         }),
     },

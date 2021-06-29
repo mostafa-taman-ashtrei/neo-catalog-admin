@@ -8,6 +8,7 @@ import manufacturerList from './lists/manufacturerList';
 import orderList from './lists/orderList';
 import ordersProductList from './lists/orders_product';
 import categoryList from './lists/categoryList';
+import notificationList from './lists/notificationList';
 
 export const lists = createSchema({
     User: userList,
@@ -19,4 +20,5 @@ export const lists = createSchema({
     Order: orderList,
     OrdersProduct: ordersProductList,
     Category: categoryList,
+    Notification: notificationList,
 });

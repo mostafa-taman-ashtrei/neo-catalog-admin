@@ -37,18 +37,6 @@ const postList = list({
                 inlineCreate: { fields: ['name', 'email'] },
             },
         }),
-        tags: relationship({
-            ref: 'Tag.posts',
-            ui: {
-                displayMode: 'cards',
-                cardFields: ['name'],
-                inlineEdit: { fields: ['name'] },
-                linkToItem: true,
-                inlineConnect: true,
-                inlineCreate: { fields: ['name'] },
-            },
-            many: true,
-        }),
     },
 });
 

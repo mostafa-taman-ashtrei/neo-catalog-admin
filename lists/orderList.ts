@@ -18,6 +18,7 @@ const orderList = list({
         billing_city: text({ isRequired: true }),
         billing_country: text({ isRequired: true }),
         delivery_street_address: text({ isRequired: true }),
+        delivery_name: text({ isRequired: true }),
         currency: text({ isRequired: true }),
         status: select({
             options: [

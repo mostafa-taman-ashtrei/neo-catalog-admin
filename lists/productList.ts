@@ -4,7 +4,7 @@ import { list } from '@keystone-next/keystone/schema';
 const productList = list({
     ui: {
         listView: {
-            initialColumns: ['title', 'price', 'status', 'image', 'reviews', 'manufacturer', 'category'],
+            initialColumns: ['title', 'price', 'status', 'image', 'reviews', 'manufacturer', 'category', 'tags'],
         },
     },
 
@@ -41,9 +41,20 @@ const productList = list({
         reviews: relationship({ ref: 'Review.product', many: true }),
         image: image({ isRequired: true }), // The image is stored locally for now
         discount: integer({ isRequired: false }),
-        // category: text({ isRequired: true }),
         rating: integer({ isRequired: false, defaultValue: 0 }),
         category: relationship({ ref: 'Category.products' }),
+        tags: relationship({
+            ref: 'Tag.products',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['name'],
+                inlineEdit: { fields: ['name'] },
+                linkToItem: true,
+                inlineConnect: true,
+                inlineCreate: { fields: ['name'] },
+            },
+            many: true,
+        }),
     },
 });
 

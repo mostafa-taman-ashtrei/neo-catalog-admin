@@ -9,13 +9,20 @@ generator client {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  name     String?
-  email    String?  @unique
-  password String?
-  posts    Post[]   @relation("Post_author")
-  reviews  Review[] @relation("Review_customer")
-  orders   Order[]  @relation("Order_customer")
+  id                      Int            @id @default(autoincrement())
+  name                    String?
+  email                   String?        @unique
+  password                String?
+  posts                   Post[]         @relation("Post_author")
+  reviews                 Review[]       @relation("Review_customer")
+  orders                  Order[]        @relation("Order_customer")
+  profile_image_filesize  Int?
+  profile_image_extension String?
+  profile_image_width     Int?
+  profile_image_height    Int?
+  profile_image_mode      String?
+  profile_image_id        String?
+  notifications           Notification[] @relation("Notification_customer")
 }
 
 model Post {
@@ -26,7 +33,6 @@ model Post {
   publishDate DateTime?
   author      User?     @relation("Post_author", fields: [authorId], references: [id])
   authorId    Int?      @map("author")
-  tags        Tag[]     @relation("Post_tags_Tag_posts")
 
   @@index([authorId])
 }
@@ -56,15 +62,16 @@ model Product {
   rating          Int?
   category        Category?     @relation("Product_category", fields: [categoryId], references: [id])
   categoryId      Int?          @map("category")
+  tags            Tag[]         @relation("Product_tags_Tag_products")
 
   @@index([manufacturerId])
   @@index([categoryId])
 }
 
 model Tag {
-  id    Int     @id @default(autoincrement())
-  name  String?
-  posts Post[]  @relation("Post_tags_Tag_posts")
+  id       Int       @id @default(autoincrement())
+  name     String?
+  products Product[] @relation("Product_tags_Tag_products")
 }
 
 model Review {
@@ -110,6 +117,7 @@ model Order {
   billing_city            String?
   billing_country         String?
   delivery_street_address String?
+  delivery_name           String?
   currency                String?
   status                  String?
   customer                User?           @relation("Order_customer", fields: [customerId], references: [id])
@@ -145,4 +153,14 @@ model Category {
   is_deleted      String?
   description     String?
   products        Product[] @relation("Product_category")
+}
+
+model Notification {
+  id           Int     @id @default(autoincrement())
+  notification String?
+  customer     User?   @relation("Notification_customer", fields: [customerId], references: [id])
+  customerId   Int?    @map("customer")
+  is_seen      String?
+
+  @@index([customerId])
 }

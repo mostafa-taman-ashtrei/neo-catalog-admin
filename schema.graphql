@@ -72,6 +72,29 @@ type User {
       reason: "This query will be removed in a future version. Please use ordersCount instead."
     )
   ordersCount(where: OrderWhereInput! = {}): Int
+  profile_image: ImageFieldOutput
+  notifications(
+    where: NotificationWhereInput! = {}
+    search: String
+    sortBy: [SortNotificationsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [NotificationOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Notification!]
+  _notificationsMeta(
+    where: NotificationWhereInput! = {}
+    search: String
+    sortBy: [SortNotificationsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [NotificationOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use notificationsCount instead."
+    )
+  notificationsCount(where: NotificationWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -80,6 +103,23 @@ type PasswordState {
 
 type _QueryMeta {
   count: Int
+}
+
+interface ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
 }
 
 input UserWhereInput {
@@ -175,6 +215,21 @@ input UserWhereInput {
    condition must be false for all nodes
   """
   orders_none: OrderWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  notifications_every: NotificationWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  notifications_some: NotificationWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  notifications_none: NotificationWhereInput
 }
 
 input UserWhereUniqueInput {
@@ -209,6 +264,8 @@ input UserUpdateInput {
   posts: PostRelateToManyInput
   reviews: ReviewRelateToManyInput
   orders: OrderRelateToManyInput
+  profile_image: ImageFieldInput
+  notifications: NotificationRelateToManyInput
 }
 
 input PostRelateToManyInput {
@@ -232,6 +289,23 @@ input OrderRelateToManyInput {
   disconnectAll: Boolean
 }
 
+input ImageFieldInput {
+  upload: Upload
+  ref: String
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input NotificationRelateToManyInput {
+  create: [NotificationCreateInput]
+  connect: [NotificationWhereUniqueInput]
+  disconnect: [NotificationWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
 input UsersUpdateInput {
   id: ID!
   data: UserUpdateInput
@@ -244,6 +318,8 @@ input UserCreateInput {
   posts: PostRelateToManyInput
   reviews: ReviewRelateToManyInput
   orders: OrderRelateToManyInput
+  profile_image: ImageFieldInput
+  notifications: NotificationRelateToManyInput
 }
 
 input UsersCreateInput {
@@ -260,28 +336,6 @@ type Post {
   content: Post_content_DocumentField
   publishDate: String
   author: User
-  tags(
-    where: TagWhereInput! = {}
-    search: String
-    sortBy: [SortTagsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TagOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Tag!]
-  _tagsMeta(
-    where: TagWhereInput! = {}
-    search: String
-    sortBy: [SortTagsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [TagOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use tagsCount instead."
-    )
-  tagsCount(where: TagWhereInput! = {}): Int
 }
 
 type Post_content_DocumentField {
@@ -331,21 +385,6 @@ input PostWhereInput {
   publishDate_not_in: [String]
   author: UserWhereInput
   author_is_null: Boolean
-
-  """
-   condition must be true for all nodes
-  """
-  tags_every: TagWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  tags_some: TagWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  tags_none: TagWhereInput
 }
 
 input PostWhereUniqueInput {
@@ -376,20 +415,12 @@ input PostUpdateInput {
   content: JSON
   publishDate: String
   author: UserRelateToOneInput
-  tags: TagRelateToManyInput
 }
 
 input UserRelateToOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
   disconnect: UserWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input TagRelateToManyInput {
-  create: [TagCreateInput]
-  connect: [TagWhereUniqueInput]
-  disconnect: [TagWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -404,7 +435,6 @@ input PostCreateInput {
   content: JSON
   publishDate: String
   author: UserRelateToOneInput
-  tags: TagRelateToManyInput
 }
 
 input PostsCreateInput {
@@ -453,23 +483,28 @@ type Product {
   discount: Int
   rating: Int
   category: Category
-}
-
-interface ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
-}
-
-enum ImageExtension {
-  jpg
-  png
-  webp
-  gif
+  tags(
+    where: TagWhereInput! = {}
+    search: String
+    sortBy: [SortTagsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Tag!]
+  _tagsMeta(
+    where: TagWhereInput! = {}
+    search: String
+    sortBy: [SortTagsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [TagOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use tagsCount instead."
+    )
+  tagsCount(where: TagWhereInput! = {}): Int
 }
 
 input ProductWhereInput {
@@ -622,6 +657,21 @@ input ProductWhereInput {
   rating_not_in: [Int]
   category: CategoryWhereInput
   category_is_null: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  tags_every: TagWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  tags_some: TagWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  tags_none: TagWhereInput
 }
 
 input ProductWhereUniqueInput {
@@ -690,6 +740,7 @@ input ProductUpdateInput {
   discount: Int
   rating: Int
   category: CategoryRelateToOneInput
+  tags: TagRelateToManyInput
 }
 
 input ManufacturerRelateToOneInput {
@@ -699,20 +750,17 @@ input ManufacturerRelateToOneInput {
   disconnectAll: Boolean
 }
 
-input ImageFieldInput {
-  upload: Upload
-  ref: String
-}
-
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
-
 input CategoryRelateToOneInput {
   create: CategoryCreateInput
   connect: CategoryWhereUniqueInput
   disconnect: CategoryWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input TagRelateToManyInput {
+  create: [TagCreateInput]
+  connect: [TagWhereUniqueInput]
+  disconnect: [TagWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -738,6 +786,7 @@ input ProductCreateInput {
   discount: Int
   rating: Int
   category: CategoryRelateToOneInput
+  tags: TagRelateToManyInput
 }
 
 input ProductsCreateInput {
@@ -750,28 +799,28 @@ input ProductsCreateInput {
 type Tag {
   id: ID!
   name: String
-  posts(
-    where: PostWhereInput! = {}
+  products(
+    where: ProductWhereInput! = {}
     search: String
-    sortBy: [SortPostsBy!]
+    sortBy: [SortProductsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
+    orderBy: [ProductOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [Post!]
-  _postsMeta(
-    where: PostWhereInput! = {}
+  ): [Product!]
+  _productsMeta(
+    where: ProductWhereInput! = {}
     search: String
-    sortBy: [SortPostsBy!]
+    sortBy: [SortProductsBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [PostOrderByInput!]! = []
+    orderBy: [ProductOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
     @deprecated(
-      reason: "This query will be removed in a future version. Please use postsCount instead."
+      reason: "This query will be removed in a future version. Please use productsCount instead."
     )
-  postsCount(where: PostWhereInput! = {}): Int
+  productsCount(where: ProductWhereInput! = {}): Int
 }
 
 input TagWhereInput {
@@ -807,17 +856,17 @@ input TagWhereInput {
   """
    condition must be true for all nodes
   """
-  posts_every: PostWhereInput
+  products_every: ProductWhereInput
 
   """
    condition must be true for at least 1 node
   """
-  posts_some: PostWhereInput
+  products_some: ProductWhereInput
 
   """
    condition must be false for all nodes
   """
-  posts_none: PostWhereInput
+  products_none: ProductWhereInput
 }
 
 input TagWhereUniqueInput {
@@ -838,7 +887,14 @@ input TagOrderByInput {
 
 input TagUpdateInput {
   name: String
-  posts: PostRelateToManyInput
+  products: ProductRelateToManyInput
+}
+
+input ProductRelateToManyInput {
+  create: [ProductCreateInput]
+  connect: [ProductWhereUniqueInput]
+  disconnect: [ProductWhereUniqueInput]
+  disconnectAll: Boolean
 }
 
 input TagsUpdateInput {
@@ -848,7 +904,7 @@ input TagsUpdateInput {
 
 input TagCreateInput {
   name: String
-  posts: PostRelateToManyInput
+  products: ProductRelateToManyInput
 }
 
 input TagsCreateInput {
@@ -1171,13 +1227,6 @@ input ManufacturerUpdateInput {
   products: ProductRelateToManyInput
 }
 
-input ProductRelateToManyInput {
-  create: [ProductCreateInput]
-  connect: [ProductWhereUniqueInput]
-  disconnect: [ProductWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
 input ManufacturersUpdateInput {
   id: ID!
   data: ManufacturerUpdateInput
@@ -1211,6 +1260,7 @@ type Order {
   billing_city: String
   billing_country: String
   delivery_street_address: String
+  delivery_name: String
   currency: String
   status: String
   customer: User
@@ -1371,6 +1421,24 @@ input OrderWhereInput {
   delivery_street_address_not_ends_with_i: String
   delivery_street_address_in: [String]
   delivery_street_address_not_in: [String]
+  delivery_name: String
+  delivery_name_not: String
+  delivery_name_contains: String
+  delivery_name_not_contains: String
+  delivery_name_starts_with: String
+  delivery_name_not_starts_with: String
+  delivery_name_ends_with: String
+  delivery_name_not_ends_with: String
+  delivery_name_i: String
+  delivery_name_not_i: String
+  delivery_name_contains_i: String
+  delivery_name_not_contains_i: String
+  delivery_name_starts_with_i: String
+  delivery_name_not_starts_with_i: String
+  delivery_name_ends_with_i: String
+  delivery_name_not_ends_with_i: String
+  delivery_name_in: [String]
+  delivery_name_not_in: [String]
   currency: String
   currency_not: String
   currency_contains: String
@@ -1437,6 +1505,8 @@ enum SortOrdersBy {
   billing_country_DESC
   delivery_street_address_ASC
   delivery_street_address_DESC
+  delivery_name_ASC
+  delivery_name_DESC
   currency_ASC
   currency_DESC
   status_ASC
@@ -1454,6 +1524,7 @@ input OrderOrderByInput {
   billing_city: OrderDirection
   billing_country: OrderDirection
   delivery_street_address: OrderDirection
+  delivery_name: OrderDirection
   currency: OrderDirection
   status: OrderDirection
 }
@@ -1468,6 +1539,7 @@ input OrderUpdateInput {
   billing_city: String
   billing_country: String
   delivery_street_address: String
+  delivery_name: String
   currency: String
   status: String
   customer: UserRelateToOneInput
@@ -1496,6 +1568,7 @@ input OrderCreateInput {
   billing_city: String
   billing_country: String
   delivery_street_address: String
+  delivery_name: String
   currency: String
   status: String
   customer: UserRelateToOneInput
@@ -1857,6 +1930,107 @@ input CategoriesCreateInput {
 }
 
 """
+ A keystone list
+"""
+type Notification {
+  id: ID!
+  notification: String
+  customer: User
+  is_seen: String
+}
+
+input NotificationWhereInput {
+  AND: [NotificationWhereInput!]
+  OR: [NotificationWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  notification: String
+  notification_not: String
+  notification_contains: String
+  notification_not_contains: String
+  notification_starts_with: String
+  notification_not_starts_with: String
+  notification_ends_with: String
+  notification_not_ends_with: String
+  notification_i: String
+  notification_not_i: String
+  notification_contains_i: String
+  notification_not_contains_i: String
+  notification_starts_with_i: String
+  notification_not_starts_with_i: String
+  notification_ends_with_i: String
+  notification_not_ends_with_i: String
+  notification_in: [String]
+  notification_not_in: [String]
+  customer: UserWhereInput
+  customer_is_null: Boolean
+  is_seen: String
+  is_seen_not: String
+  is_seen_contains: String
+  is_seen_not_contains: String
+  is_seen_starts_with: String
+  is_seen_not_starts_with: String
+  is_seen_ends_with: String
+  is_seen_not_ends_with: String
+  is_seen_i: String
+  is_seen_not_i: String
+  is_seen_contains_i: String
+  is_seen_not_contains_i: String
+  is_seen_starts_with_i: String
+  is_seen_not_starts_with_i: String
+  is_seen_ends_with_i: String
+  is_seen_not_ends_with_i: String
+  is_seen_in: [String]
+  is_seen_not_in: [String]
+}
+
+input NotificationWhereUniqueInput {
+  id: ID
+}
+
+enum SortNotificationsBy {
+  id_ASC
+  id_DESC
+  notification_ASC
+  notification_DESC
+  is_seen_ASC
+  is_seen_DESC
+}
+
+input NotificationOrderByInput {
+  id: OrderDirection
+  notification: OrderDirection
+  is_seen: OrderDirection
+}
+
+input NotificationUpdateInput {
+  notification: String
+  customer: UserRelateToOneInput
+  is_seen: String
+}
+
+input NotificationsUpdateInput {
+  id: ID!
+  data: NotificationUpdateInput
+}
+
+input NotificationCreateInput {
+  notification: String
+  customer: UserRelateToOneInput
+  is_seen: String
+}
+
+input NotificationsCreateInput {
+  data: NotificationCreateInput
+}
+
+"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -2134,6 +2308,36 @@ type Mutation {
    Delete multiple Category items by ID.
   """
   deleteCategories(ids: [ID!]): [Category]
+
+  """
+   Create a single Notification item.
+  """
+  createNotification(data: NotificationCreateInput): Notification
+
+  """
+   Create multiple Notification items.
+  """
+  createNotifications(data: [NotificationsCreateInput]): [Notification]
+
+  """
+   Update a single Notification item by ID.
+  """
+  updateNotification(id: ID!, data: NotificationUpdateInput): Notification
+
+  """
+   Update multiple Notification items by ID.
+  """
+  updateNotifications(data: [NotificationsUpdateInput]): [Notification]
+
+  """
+   Delete a single Notification item by ID.
+  """
+  deleteNotification(id: ID!): Notification
+
+  """
+   Delete multiple Notification items by ID.
+  """
+  deleteNotifications(ids: [ID!]): [Notification]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -2489,6 +2693,41 @@ type Query {
       reason: "This query will be removed in a future version. Please use categoriesCount instead."
     )
   categoriesCount(where: CategoryWhereInput! = {}): Int
+
+  """
+   Search for all Notification items which match the where clause.
+  """
+  allNotifications(
+    where: NotificationWhereInput! = {}
+    search: String
+    sortBy: [SortNotificationsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [NotificationOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Notification!]
+
+  """
+   Search for the Notification item with the matching ID.
+  """
+  Notification(where: NotificationWhereUniqueInput!): Notification
+
+  """
+   Perform a meta-query on all Notification items which match the where clause.
+  """
+  _allNotificationsMeta(
+    where: NotificationWhereInput! = {}
+    search: String
+    sortBy: [SortNotificationsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [NotificationOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use notificationsCount instead."
+    )
+  notificationsCount(where: NotificationWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

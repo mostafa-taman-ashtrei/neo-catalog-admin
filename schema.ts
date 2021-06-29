@@ -7,6 +7,7 @@ import userList from './lists/userList';
 import manufacturerList from './lists/manufacturerList';
 import orderList from './lists/orderList';
 import ordersProductList from './lists/orders_product';
+import categoryList from './lists/categoryList';
 
 export const lists = createSchema({
     User: userList,
@@ -17,4 +18,5 @@ export const lists = createSchema({
     Manufacturer: manufacturerList,
     Order: orderList,
     OrdersProduct: ordersProductList,
+    Category: categoryList,
 });

@@ -426,16 +426,6 @@ enum ImageExtension {
   gif
 }
 
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
-}
-
 input ProductWhereInput {
   AND: [ProductWhereInput!]
   OR: [ProductWhereInput!]
@@ -995,6 +985,7 @@ type Manufacturer {
   updated_at: String
   deleted_at: String
   is_deleted: String
+  image: ImageFieldOutput
   name: String
   products(
     where: ProductWhereInput! = {}
@@ -1018,6 +1009,16 @@ type Manufacturer {
       reason: "This query will be removed in a future version. Please use productsCount instead."
     )
   productsCount(where: ProductWhereInput! = {}): Int
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
 }
 
 input ManufacturerWhereInput {
@@ -1141,6 +1142,7 @@ input ManufacturerUpdateInput {
   updated_at: String
   deleted_at: String
   is_deleted: String
+  image: ImageFieldInput
   name: String
   products: ProductRelateToManyInput
 }
@@ -1162,6 +1164,7 @@ input ManufacturerCreateInput {
   updated_at: String
   deleted_at: String
   is_deleted: String
+  image: ImageFieldInput
   name: String
   products: ProductRelateToManyInput
 }

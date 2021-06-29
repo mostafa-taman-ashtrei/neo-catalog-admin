@@ -4,6 +4,7 @@ import { config as envConfig } from 'dotenv';
 
 import { lists } from './schema';
 import session from './utils/createSession';
+import makeDir from './utils/makedir';
 
 envConfig();
 
@@ -17,6 +18,9 @@ const { withAuth } = createAuth({
     },
 });
 
+// create imaegs folder for uploads
+makeDir(`${__dirname}/public`);
+makeDir(`${__dirname}/public/images`);
 
 export default withAuth(
     config({

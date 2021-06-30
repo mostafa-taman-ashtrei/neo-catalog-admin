@@ -4,7 +4,7 @@ import { list } from '@keystone-next/keystone/schema';
 const orderList = list({
     ui: {
         listView: {
-            initialColumns: ['status', 'customer', 'orders_product', 'order_total'],
+            initialColumns: ['status', 'customer', 'payment_method', 'orders_product', 'order_total'],
         },
     },
 
@@ -20,6 +20,16 @@ const orderList = list({
         delivery_street_address: text({ isRequired: true }),
         delivery_name: text({ isRequired: true }),
         currency: text({ isRequired: true }),
+        payment_method: select({
+            options: [
+                { value: 'cash', label: 'cash' },
+                { value: 'visa', label: 'visa' },
+                { value: 'paypal', label: 'paypal' },
+            ],
+            ui: {
+                displayMode: 'segmented-control',
+            },
+        }),
         status: select({
             options: [
                 { value: 'Inprogress', label: 'Inprogress' },
@@ -41,7 +51,6 @@ const orderList = list({
             },
         }),
         orders_product: relationship({ ref: 'OrdersProduct', many: true }),
-
     },
 });
 

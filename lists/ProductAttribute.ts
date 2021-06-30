@@ -1,10 +1,10 @@
-import { text, timestamp, relationship, decimal } from '@keystone-next/fields';
+import { text, timestamp, decimal, relationship } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
 
 const productAttributeList = list({
     ui: {
         listView: {
-            initialColumns: ['color', 'size'],
+            initialColumns: ['color', 'size', 'attribute_type'],
         },
     },
 
@@ -19,8 +19,8 @@ const productAttributeList = list({
         dimensions: text(),
         weight: decimal(),
         packaging: text(),
-        product_type: relationship({ ref: 'ProductType.attributes', many: true }),
         design: text(),
+        attribute_type: relationship({ ref: 'AttributeType' })
     },
 });
 

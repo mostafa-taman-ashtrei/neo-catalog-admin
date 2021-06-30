@@ -1,10 +1,10 @@
 import { text, timestamp, relationship } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
 
-const productTypeList = list({
+const productTypeAttributeList = list({
     ui: {
         listView: {
-            initialColumns: ['product_type', 'product_type_attributes'],
+            initialColumns: ['created_at', 'product_type', 'attributes'],
         },
     },
 
@@ -13,10 +13,9 @@ const productTypeList = list({
         updated_at: timestamp(),
         deleted_at: timestamp({ isRequired: false }), // the deleted_at fiels is used for soft deletes  
         is_deleted: text({ isRequired: true, defaultValue: 'false' }),
-        product_type: text({ isRequired: true }),
-        product_type_attributes: relationship({ ref: 'ProductTypeAttribute', many: true }),
-        products: relationship({ ref: 'Product.product_type', many: true }),
+        product_type: relationship({ ref: 'ProductType', many: true }),
+        attributes: relationship({ ref: 'ProductAttribute', many: true }),
     },
 });
 
-export default productTypeList;
+export default productTypeAttributeList;

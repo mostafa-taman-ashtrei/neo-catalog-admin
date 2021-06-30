@@ -66,12 +66,12 @@ model Product {
   category        Category?     @relation("Product_category", fields: [categoryId], references: [id])
   categoryId      Int?          @map("category")
   tags            Tag[]         @relation("Product_tags_Tag_products")
-  type            ProductType?  @relation("Product_type", fields: [typeId], references: [id])
-  typeId          Int?          @map("type")
+  product_type    ProductType?  @relation("Product_product_type", fields: [product_typeId], references: [id])
+  product_typeId  Int?          @map("product_type")
 
   @@index([manufacturerId])
   @@index([categoryId])
-  @@index([typeId])
+  @@index([product_typeId])
 }
 
 model Tag {
@@ -205,28 +205,56 @@ model Discount {
 }
 
 model ProductType {
-  id           Int                @id @default(autoincrement())
-  created_at   DateTime?
-  updated_at   DateTime?
-  deleted_at   DateTime?
-  is_deleted   String?
-  product_type String?
-  attributes   ProductAttribute[] @relation("ProductAttribute_product_type_ProductType_attributes")
-  products     Product[]          @relation("Product_type")
+  id                                     Int                    @id @default(autoincrement())
+  created_at                             DateTime?
+  updated_at                             DateTime?
+  deleted_at                             DateTime?
+  is_deleted                             String?
+  product_type                           String?
+  product_type_attributes                ProductTypeAttribute[] @relation("ProductType_product_type_attributes_many")
+  products                               Product[]              @relation("Product_product_type")
+  from_ProductTypeAttribute_product_type ProductTypeAttribute[] @relation("ProductTypeAttribute_product_type_many")
 }
 
 model ProductAttribute {
-  id           Int           @id @default(autoincrement())
-  created_at   DateTime?
-  updated_at   DateTime?
-  deleted_at   DateTime?
-  is_deleted   String?
-  size         String?
-  material     String?
-  color        String?
-  dimensions   String?
-  weight       Decimal?      @postgresql.Decimal(18, 4)
-  packaging    String?
-  product_type ProductType[] @relation("ProductAttribute_product_type_ProductType_attributes")
-  design       String?
+  id                                   Int                    @id @default(autoincrement())
+  created_at                           DateTime?
+  updated_at                           DateTime?
+  deleted_at                           DateTime?
+  is_deleted                           String?
+  size                                 String?
+  material                             String?
+  color                                String?
+  dimensions                           String?
+  weight                               Decimal?               @postgresql.Decimal(18, 4)
+  packaging                            String?
+  design                               String?
+  attribute_type                       AttributeType?         @relation("ProductAttribute_attribute_type", fields: [attribute_typeId], references: [id])
+  attribute_typeId                     Int?                   @map("attribute_type")
+  from_AttributeType_attribute_value   AttributeType[]        @relation("AttributeType_attribute_value_many")
+  from_ProductTypeAttribute_attributes ProductTypeAttribute[] @relation("ProductTypeAttribute_attributes_many")
+
+  @@index([attribute_typeId])
+}
+
+model AttributeType {
+  id                                   Int                @id @default(autoincrement())
+  created_at                           DateTime?
+  updated_at                           DateTime?
+  deleted_at                           DateTime?
+  is_deleted                           String?
+  attribute_value                      ProductAttribute[] @relation("AttributeType_attribute_value_many")
+  attribute_type                       String?
+  from_ProductAttribute_attribute_type ProductAttribute[] @relation("ProductAttribute_attribute_type")
+}
+
+model ProductTypeAttribute {
+  id                                       Int                @id @default(autoincrement())
+  created_at                               DateTime?
+  updated_at                               DateTime?
+  deleted_at                               DateTime?
+  is_deleted                               String?
+  product_type                             ProductType[]      @relation("ProductTypeAttribute_product_type_many")
+  attributes                               ProductAttribute[] @relation("ProductTypeAttribute_attributes_many")
+  from_ProductType_product_type_attributes ProductType[]      @relation("ProductType_product_type_attributes_many")
 }

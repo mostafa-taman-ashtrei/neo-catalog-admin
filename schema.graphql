@@ -550,6 +550,7 @@ type Product {
       reason: "This query will be removed in a future version. Please use tagsCount instead."
     )
   tagsCount(where: TagWhereInput! = {}): Int
+  type: ProductType
 }
 
 input ProductWhereInput {
@@ -775,6 +776,8 @@ input ProductWhereInput {
    condition must be false for all nodes
   """
   tags_none: TagWhereInput
+  type: ProductTypeWhereInput
+  type_is_null: Boolean
 }
 
 input ProductWhereUniqueInput {
@@ -850,6 +853,7 @@ input ProductUpdateInput {
   rating: Int
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
+  type: ProductTypeRelateToOneInput
 }
 
 input ManufacturerRelateToOneInput {
@@ -887,6 +891,13 @@ input TagRelateToManyInput {
   disconnectAll: Boolean
 }
 
+input ProductTypeRelateToOneInput {
+  create: ProductTypeCreateInput
+  connect: ProductTypeWhereUniqueInput
+  disconnect: ProductTypeWhereUniqueInput
+  disconnectAll: Boolean
+}
+
 input ProductsUpdateInput {
   id: ID!
   data: ProductUpdateInput
@@ -913,6 +924,7 @@ input ProductCreateInput {
   rating: Int
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
+  type: ProductTypeRelateToOneInput
 }
 
 input ProductsCreateInput {
@@ -2725,6 +2737,545 @@ input DiscountsCreateInput {
 }
 
 """
+ A keystone list
+"""
+type ProductType {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  product_type: String
+  attributes(
+    where: ProductAttributeWhereInput! = {}
+    search: String
+    sortBy: [SortProductAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductAttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductAttribute!]
+  _attributesMeta(
+    where: ProductAttributeWhereInput! = {}
+    search: String
+    sortBy: [SortProductAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductAttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use attributesCount instead."
+    )
+  attributesCount(where: ProductAttributeWhereInput! = {}): Int
+  products(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Product!]
+  _productsMeta(
+    where: ProductWhereInput! = {}
+    search: String
+    sortBy: [SortProductsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productsCount instead."
+    )
+  productsCount(where: ProductWhereInput! = {}): Int
+}
+
+input ProductTypeWhereInput {
+  AND: [ProductTypeWhereInput!]
+  OR: [ProductTypeWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  product_type: String
+  product_type_not: String
+  product_type_contains: String
+  product_type_not_contains: String
+  product_type_starts_with: String
+  product_type_not_starts_with: String
+  product_type_ends_with: String
+  product_type_not_ends_with: String
+  product_type_i: String
+  product_type_not_i: String
+  product_type_contains_i: String
+  product_type_not_contains_i: String
+  product_type_starts_with_i: String
+  product_type_not_starts_with_i: String
+  product_type_ends_with_i: String
+  product_type_not_ends_with_i: String
+  product_type_in: [String]
+  product_type_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  attributes_every: ProductAttributeWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  attributes_some: ProductAttributeWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  attributes_none: ProductAttributeWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  products_every: ProductWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  products_some: ProductWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  products_none: ProductWhereInput
+}
+
+input ProductTypeWhereUniqueInput {
+  id: ID
+}
+
+enum SortProductTypesBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  product_type_ASC
+  product_type_DESC
+}
+
+input ProductTypeOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  product_type: OrderDirection
+}
+
+input ProductTypeUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  product_type: String
+  attributes: ProductAttributeRelateToManyInput
+  products: ProductRelateToManyInput
+}
+
+input ProductAttributeRelateToManyInput {
+  create: [ProductAttributeCreateInput]
+  connect: [ProductAttributeWhereUniqueInput]
+  disconnect: [ProductAttributeWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input ProductTypesUpdateInput {
+  id: ID!
+  data: ProductTypeUpdateInput
+}
+
+input ProductTypeCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  product_type: String
+  attributes: ProductAttributeRelateToManyInput
+  products: ProductRelateToManyInput
+}
+
+input ProductTypesCreateInput {
+  data: ProductTypeCreateInput
+}
+
+"""
+ A keystone list
+"""
+type ProductAttribute {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  size: String
+  material: String
+  color: String
+  dimensions: String
+  weight: String
+  packaging: String
+  product_type(
+    where: ProductTypeWhereInput! = {}
+    search: String
+    sortBy: [SortProductTypesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductTypeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductType!]
+  _product_typeMeta(
+    where: ProductTypeWhereInput! = {}
+    search: String
+    sortBy: [SortProductTypesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductTypeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use product_typeCount instead."
+    )
+  product_typeCount(where: ProductTypeWhereInput! = {}): Int
+  design: String
+}
+
+input ProductAttributeWhereInput {
+  AND: [ProductAttributeWhereInput!]
+  OR: [ProductAttributeWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  size: String
+  size_not: String
+  size_contains: String
+  size_not_contains: String
+  size_starts_with: String
+  size_not_starts_with: String
+  size_ends_with: String
+  size_not_ends_with: String
+  size_i: String
+  size_not_i: String
+  size_contains_i: String
+  size_not_contains_i: String
+  size_starts_with_i: String
+  size_not_starts_with_i: String
+  size_ends_with_i: String
+  size_not_ends_with_i: String
+  size_in: [String]
+  size_not_in: [String]
+  material: String
+  material_not: String
+  material_contains: String
+  material_not_contains: String
+  material_starts_with: String
+  material_not_starts_with: String
+  material_ends_with: String
+  material_not_ends_with: String
+  material_i: String
+  material_not_i: String
+  material_contains_i: String
+  material_not_contains_i: String
+  material_starts_with_i: String
+  material_not_starts_with_i: String
+  material_ends_with_i: String
+  material_not_ends_with_i: String
+  material_in: [String]
+  material_not_in: [String]
+  color: String
+  color_not: String
+  color_contains: String
+  color_not_contains: String
+  color_starts_with: String
+  color_not_starts_with: String
+  color_ends_with: String
+  color_not_ends_with: String
+  color_i: String
+  color_not_i: String
+  color_contains_i: String
+  color_not_contains_i: String
+  color_starts_with_i: String
+  color_not_starts_with_i: String
+  color_ends_with_i: String
+  color_not_ends_with_i: String
+  color_in: [String]
+  color_not_in: [String]
+  dimensions: String
+  dimensions_not: String
+  dimensions_contains: String
+  dimensions_not_contains: String
+  dimensions_starts_with: String
+  dimensions_not_starts_with: String
+  dimensions_ends_with: String
+  dimensions_not_ends_with: String
+  dimensions_i: String
+  dimensions_not_i: String
+  dimensions_contains_i: String
+  dimensions_not_contains_i: String
+  dimensions_starts_with_i: String
+  dimensions_not_starts_with_i: String
+  dimensions_ends_with_i: String
+  dimensions_not_ends_with_i: String
+  dimensions_in: [String]
+  dimensions_not_in: [String]
+  weight: String
+  weight_not: String
+  weight_lt: String
+  weight_lte: String
+  weight_gt: String
+  weight_gte: String
+  packaging: String
+  packaging_not: String
+  packaging_contains: String
+  packaging_not_contains: String
+  packaging_starts_with: String
+  packaging_not_starts_with: String
+  packaging_ends_with: String
+  packaging_not_ends_with: String
+  packaging_i: String
+  packaging_not_i: String
+  packaging_contains_i: String
+  packaging_not_contains_i: String
+  packaging_starts_with_i: String
+  packaging_not_starts_with_i: String
+  packaging_ends_with_i: String
+  packaging_not_ends_with_i: String
+  packaging_in: [String]
+  packaging_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  product_type_every: ProductTypeWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  product_type_some: ProductTypeWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  product_type_none: ProductTypeWhereInput
+  design: String
+  design_not: String
+  design_contains: String
+  design_not_contains: String
+  design_starts_with: String
+  design_not_starts_with: String
+  design_ends_with: String
+  design_not_ends_with: String
+  design_i: String
+  design_not_i: String
+  design_contains_i: String
+  design_not_contains_i: String
+  design_starts_with_i: String
+  design_not_starts_with_i: String
+  design_ends_with_i: String
+  design_not_ends_with_i: String
+  design_in: [String]
+  design_not_in: [String]
+}
+
+input ProductAttributeWhereUniqueInput {
+  id: ID
+}
+
+enum SortProductAttributesBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  size_ASC
+  size_DESC
+  material_ASC
+  material_DESC
+  color_ASC
+  color_DESC
+  dimensions_ASC
+  dimensions_DESC
+  weight_ASC
+  weight_DESC
+  packaging_ASC
+  packaging_DESC
+  design_ASC
+  design_DESC
+}
+
+input ProductAttributeOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  size: OrderDirection
+  material: OrderDirection
+  color: OrderDirection
+  dimensions: OrderDirection
+  weight: OrderDirection
+  packaging: OrderDirection
+  design: OrderDirection
+}
+
+input ProductAttributeUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  size: String
+  material: String
+  color: String
+  dimensions: String
+  weight: String
+  packaging: String
+  product_type: ProductTypeRelateToManyInput
+  design: String
+}
+
+input ProductTypeRelateToManyInput {
+  create: [ProductTypeCreateInput]
+  connect: [ProductTypeWhereUniqueInput]
+  disconnect: [ProductTypeWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input ProductAttributesUpdateInput {
+  id: ID!
+  data: ProductAttributeUpdateInput
+}
+
+input ProductAttributeCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  size: String
+  material: String
+  color: String
+  dimensions: String
+  weight: String
+  packaging: String
+  product_type: ProductTypeRelateToManyInput
+  design: String
+}
+
+input ProductAttributesCreateInput {
+  data: ProductAttributeCreateInput
+}
+
+"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -3092,6 +3643,73 @@ type Mutation {
    Delete multiple Discount items by ID.
   """
   deleteDiscounts(ids: [ID!]): [Discount]
+
+  """
+   Create a single ProductType item.
+  """
+  createProductType(data: ProductTypeCreateInput): ProductType
+
+  """
+   Create multiple ProductType items.
+  """
+  createProductTypes(data: [ProductTypesCreateInput]): [ProductType]
+
+  """
+   Update a single ProductType item by ID.
+  """
+  updateProductType(id: ID!, data: ProductTypeUpdateInput): ProductType
+
+  """
+   Update multiple ProductType items by ID.
+  """
+  updateProductTypes(data: [ProductTypesUpdateInput]): [ProductType]
+
+  """
+   Delete a single ProductType item by ID.
+  """
+  deleteProductType(id: ID!): ProductType
+
+  """
+   Delete multiple ProductType items by ID.
+  """
+  deleteProductTypes(ids: [ID!]): [ProductType]
+
+  """
+   Create a single ProductAttribute item.
+  """
+  createProductAttribute(data: ProductAttributeCreateInput): ProductAttribute
+
+  """
+   Create multiple ProductAttribute items.
+  """
+  createProductAttributes(
+    data: [ProductAttributesCreateInput]
+  ): [ProductAttribute]
+
+  """
+   Update a single ProductAttribute item by ID.
+  """
+  updateProductAttribute(
+    id: ID!
+    data: ProductAttributeUpdateInput
+  ): ProductAttribute
+
+  """
+   Update multiple ProductAttribute items by ID.
+  """
+  updateProductAttributes(
+    data: [ProductAttributesUpdateInput]
+  ): [ProductAttribute]
+
+  """
+   Delete a single ProductAttribute item by ID.
+  """
+  deleteProductAttribute(id: ID!): ProductAttribute
+
+  """
+   Delete multiple ProductAttribute items by ID.
+  """
+  deleteProductAttributes(ids: [ID!]): [ProductAttribute]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -3552,6 +4170,76 @@ type Query {
       reason: "This query will be removed in a future version. Please use discountsCount instead."
     )
   discountsCount(where: DiscountWhereInput! = {}): Int
+
+  """
+   Search for all ProductType items which match the where clause.
+  """
+  allProductTypes(
+    where: ProductTypeWhereInput! = {}
+    search: String
+    sortBy: [SortProductTypesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductTypeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductType!]
+
+  """
+   Search for the ProductType item with the matching ID.
+  """
+  ProductType(where: ProductTypeWhereUniqueInput!): ProductType
+
+  """
+   Perform a meta-query on all ProductType items which match the where clause.
+  """
+  _allProductTypesMeta(
+    where: ProductTypeWhereInput! = {}
+    search: String
+    sortBy: [SortProductTypesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductTypeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productTypesCount instead."
+    )
+  productTypesCount(where: ProductTypeWhereInput! = {}): Int
+
+  """
+   Search for all ProductAttribute items which match the where clause.
+  """
+  allProductAttributes(
+    where: ProductAttributeWhereInput! = {}
+    search: String
+    sortBy: [SortProductAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductAttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductAttribute!]
+
+  """
+   Search for the ProductAttribute item with the matching ID.
+  """
+  ProductAttribute(where: ProductAttributeWhereUniqueInput!): ProductAttribute
+
+  """
+   Perform a meta-query on all ProductAttribute items which match the where clause.
+  """
+  _allProductAttributesMeta(
+    where: ProductAttributeWhereInput! = {}
+    search: String
+    sortBy: [SortProductAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductAttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productAttributesCount instead."
+    )
+  productAttributesCount(where: ProductAttributeWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

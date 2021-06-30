@@ -11,6 +11,8 @@ import categoryList from './lists/categoryList';
 import notificationList from './lists/notificationList';
 import taxList from './lists/taxList';
 import discountList from './lists/discounts';
+import productAttributeList from './lists/productAttributeList';
+import productTypeList from './lists/productTypeList';
 
 export const lists = createSchema({
     User: userList,
@@ -25,4 +27,6 @@ export const lists = createSchema({
     Notification: notificationList,
     Tax: taxList,
     Discount: discountList,
+    ProductType: productTypeList,
+    ProductAttribute: productAttributeList,
 });

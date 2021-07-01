@@ -9,20 +9,21 @@ generator client {
 }
 
 model User {
-  id                      Int            @id @default(autoincrement())
-  name                    String?
-  email                   String?        @unique
-  password                String?
-  posts                   Post[]         @relation("Post_author")
-  reviews                 Review[]       @relation("Review_customer")
-  orders                  Order[]        @relation("Order_customer")
-  profile_image_filesize  Int?
-  profile_image_extension String?
-  profile_image_width     Int?
-  profile_image_height    Int?
-  profile_image_mode      String?
-  profile_image_id        String?
-  notifications           Notification[] @relation("Notification_customer")
+  id                           Int             @id @default(autoincrement())
+  name                         String?
+  email                        String?         @unique
+  password                     String?
+  posts                        Post[]          @relation("Post_author")
+  reviews                      Review[]        @relation("Review_customer")
+  orders                       Order[]         @relation("Order_customer")
+  profile_image_filesize       Int?
+  profile_image_extension      String?
+  profile_image_width          Int?
+  profile_image_height         Int?
+  profile_image_mode           String?
+  profile_image_id             String?
+  notifications                Notification[]  @relation("Notification_customer")
+  from_PaymentMethod_customers PaymentMethod[] @relation("PaymentMethod_customers_many")
 }
 
 model Post {
@@ -128,13 +129,14 @@ model Order {
   billing_country         String?
   delivery_street_address String?
   delivery_name           String?
-  currency                String?
-  payment_method          String?
+  payment_method          PaymentMethod?  @relation("Order_payment_method", fields: [payment_methodId], references: [id])
+  payment_methodId        Int?            @map("payment_method")
   status                  String?
   customer                User?           @relation("Order_customer", fields: [customerId], references: [id])
   customerId              Int?            @map("customer")
   orders_product          OrdersProduct[] @relation("Order_orders_product_many")
 
+  @@index([payment_methodId])
   @@index([customerId])
 }
 
@@ -257,4 +259,16 @@ model ProductTypeAttribute {
   product_type                             ProductType[]      @relation("ProductTypeAttribute_product_type_many")
   attributes                               ProductAttribute[] @relation("ProductTypeAttribute_attributes_many")
   from_ProductType_product_type_attributes ProductType[]      @relation("ProductType_product_type_attributes_many")
+}
+
+model PaymentMethod {
+  id             Int       @id @default(autoincrement())
+  created_at     DateTime?
+  updated_at     DateTime?
+  deleted_at     DateTime?
+  is_deleted     String?
+  payment_method String?
+  customers      User[]    @relation("PaymentMethod_customers_many")
+  orders         Order[]   @relation("Order_payment_method")
+  currency       String?
 }

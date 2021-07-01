@@ -1465,8 +1465,7 @@ type Order {
   billing_country: String
   delivery_street_address: String
   delivery_name: String
-  currency: String
-  payment_method: String
+  payment_method: PaymentMethod
   status: String
   customer: User
   orders_product(
@@ -1644,28 +1643,8 @@ input OrderWhereInput {
   delivery_name_not_ends_with_i: String
   delivery_name_in: [String]
   delivery_name_not_in: [String]
-  currency: String
-  currency_not: String
-  currency_contains: String
-  currency_not_contains: String
-  currency_starts_with: String
-  currency_not_starts_with: String
-  currency_ends_with: String
-  currency_not_ends_with: String
-  currency_i: String
-  currency_not_i: String
-  currency_contains_i: String
-  currency_not_contains_i: String
-  currency_starts_with_i: String
-  currency_not_starts_with_i: String
-  currency_ends_with_i: String
-  currency_not_ends_with_i: String
-  currency_in: [String]
-  currency_not_in: [String]
-  payment_method: String
-  payment_method_not: String
-  payment_method_in: [String]
-  payment_method_not_in: [String]
+  payment_method: PaymentMethodWhereInput
+  payment_method_is_null: Boolean
   status: String
   status_not: String
   status_in: [String]
@@ -1716,10 +1695,6 @@ enum SortOrdersBy {
   delivery_street_address_DESC
   delivery_name_ASC
   delivery_name_DESC
-  currency_ASC
-  currency_DESC
-  payment_method_ASC
-  payment_method_DESC
   status_ASC
   status_DESC
 }
@@ -1736,8 +1711,6 @@ input OrderOrderByInput {
   billing_country: OrderDirection
   delivery_street_address: OrderDirection
   delivery_name: OrderDirection
-  currency: OrderDirection
-  payment_method: OrderDirection
   status: OrderDirection
 }
 
@@ -1752,11 +1725,17 @@ input OrderUpdateInput {
   billing_country: String
   delivery_street_address: String
   delivery_name: String
-  currency: String
-  payment_method: String
+  payment_method: PaymentMethodRelateToOneInput
   status: String
   customer: UserRelateToOneInput
   orders_product: OrdersProductRelateToManyInput
+}
+
+input PaymentMethodRelateToOneInput {
+  create: PaymentMethodCreateInput
+  connect: PaymentMethodWhereUniqueInput
+  disconnect: PaymentMethodWhereUniqueInput
+  disconnectAll: Boolean
 }
 
 input OrdersProductRelateToManyInput {
@@ -1782,8 +1761,7 @@ input OrderCreateInput {
   billing_country: String
   delivery_street_address: String
   delivery_name: String
-  currency: String
-  payment_method: String
+  payment_method: PaymentMethodRelateToOneInput
   status: String
   customer: UserRelateToOneInput
   orders_product: OrdersProductRelateToManyInput
@@ -3611,6 +3589,239 @@ input ProductTypeAttributesCreateInput {
 }
 
 """
+ A keystone list
+"""
+type PaymentMethod {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  payment_method: String
+  customers(
+    where: UserWhereInput! = {}
+    search: String
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [User!]
+  _customersMeta(
+    where: UserWhereInput! = {}
+    search: String
+    sortBy: [SortUsersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [UserOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use customersCount instead."
+    )
+  customersCount(where: UserWhereInput! = {}): Int
+  orders(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Order!]
+  _ordersMeta(
+    where: OrderWhereInput! = {}
+    search: String
+    sortBy: [SortOrdersBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [OrderOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use ordersCount instead."
+    )
+  ordersCount(where: OrderWhereInput! = {}): Int
+  currency: String
+}
+
+input PaymentMethodWhereInput {
+  AND: [PaymentMethodWhereInput!]
+  OR: [PaymentMethodWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  payment_method: String
+  payment_method_not: String
+  payment_method_in: [String]
+  payment_method_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  customers_every: UserWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  customers_some: UserWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  customers_none: UserWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  orders_every: OrderWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  orders_some: OrderWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  orders_none: OrderWhereInput
+  currency: String
+  currency_not: String
+  currency_contains: String
+  currency_not_contains: String
+  currency_starts_with: String
+  currency_not_starts_with: String
+  currency_ends_with: String
+  currency_not_ends_with: String
+  currency_i: String
+  currency_not_i: String
+  currency_contains_i: String
+  currency_not_contains_i: String
+  currency_starts_with_i: String
+  currency_not_starts_with_i: String
+  currency_ends_with_i: String
+  currency_not_ends_with_i: String
+  currency_in: [String]
+  currency_not_in: [String]
+}
+
+input PaymentMethodWhereUniqueInput {
+  id: ID
+}
+
+enum SortPaymentMethodsBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  payment_method_ASC
+  payment_method_DESC
+  currency_ASC
+  currency_DESC
+}
+
+input PaymentMethodOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  payment_method: OrderDirection
+  currency: OrderDirection
+}
+
+input PaymentMethodUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  payment_method: String
+  customers: UserRelateToManyInput
+  orders: OrderRelateToManyInput
+  currency: String
+}
+
+input UserRelateToManyInput {
+  create: [UserCreateInput]
+  connect: [UserWhereUniqueInput]
+  disconnect: [UserWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input PaymentMethodsUpdateInput {
+  id: ID!
+  data: PaymentMethodUpdateInput
+}
+
+input PaymentMethodCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  payment_method: String
+  customers: UserRelateToManyInput
+  orders: OrderRelateToManyInput
+  currency: String
+}
+
+input PaymentMethodsCreateInput {
+  data: PaymentMethodCreateInput
+}
+
+"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -4114,6 +4325,36 @@ type Mutation {
    Delete multiple ProductTypeAttribute items by ID.
   """
   deleteProductTypeAttributes(ids: [ID!]): [ProductTypeAttribute]
+
+  """
+   Create a single PaymentMethod item.
+  """
+  createPaymentMethod(data: PaymentMethodCreateInput): PaymentMethod
+
+  """
+   Create multiple PaymentMethod items.
+  """
+  createPaymentMethods(data: [PaymentMethodsCreateInput]): [PaymentMethod]
+
+  """
+   Update a single PaymentMethod item by ID.
+  """
+  updatePaymentMethod(id: ID!, data: PaymentMethodUpdateInput): PaymentMethod
+
+  """
+   Update multiple PaymentMethod items by ID.
+  """
+  updatePaymentMethods(data: [PaymentMethodsUpdateInput]): [PaymentMethod]
+
+  """
+   Delete a single PaymentMethod item by ID.
+  """
+  deletePaymentMethod(id: ID!): PaymentMethod
+
+  """
+   Delete multiple PaymentMethod items by ID.
+  """
+  deletePaymentMethods(ids: [ID!]): [PaymentMethod]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -4716,6 +4957,41 @@ type Query {
       reason: "This query will be removed in a future version. Please use productTypeAttributesCount instead."
     )
   productTypeAttributesCount(where: ProductTypeAttributeWhereInput! = {}): Int
+
+  """
+   Search for all PaymentMethod items which match the where clause.
+  """
+  allPaymentMethods(
+    where: PaymentMethodWhereInput! = {}
+    search: String
+    sortBy: [SortPaymentMethodsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PaymentMethodOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [PaymentMethod!]
+
+  """
+   Search for the PaymentMethod item with the matching ID.
+  """
+  PaymentMethod(where: PaymentMethodWhereUniqueInput!): PaymentMethod
+
+  """
+   Perform a meta-query on all PaymentMethod items which match the where clause.
+  """
+  _allPaymentMethodsMeta(
+    where: PaymentMethodWhereInput! = {}
+    search: String
+    sortBy: [SortPaymentMethodsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [PaymentMethodOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use paymentMethodsCount instead."
+    )
+  paymentMethodsCount(where: PaymentMethodWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

@@ -19,17 +19,7 @@ const orderList = list({
         billing_country: text({ isRequired: true }),
         delivery_street_address: text({ isRequired: true }),
         delivery_name: text({ isRequired: true }),
-        currency: text({ isRequired: true }),
-        payment_method: select({
-            options: [
-                { value: 'cash', label: 'cash' },
-                { value: 'visa', label: 'visa' },
-                { value: 'paypal', label: 'paypal' },
-            ],
-            ui: {
-                displayMode: 'segmented-control',
-            },
-        }),
+        payment_method: relationship({ ref: 'PaymentMethod.orders' }),
         status: select({
             options: [
                 { value: 'Inprogress', label: 'Inprogress' },

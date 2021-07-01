@@ -6,6 +6,8 @@ type User {
   name: String
   email: String
   password: PasswordState
+  address: Address
+  phone: String
   posts(
     where: PostWhereInput! = {}
     search: String
@@ -170,6 +172,26 @@ input UserWhereInput {
   email_in: [String]
   email_not_in: [String]
   password_is_set: Boolean
+  address: AddressWhereInput
+  address_is_null: Boolean
+  phone: String
+  phone_not: String
+  phone_contains: String
+  phone_not_contains: String
+  phone_starts_with: String
+  phone_not_starts_with: String
+  phone_ends_with: String
+  phone_not_ends_with: String
+  phone_i: String
+  phone_not_i: String
+  phone_contains_i: String
+  phone_not_contains_i: String
+  phone_starts_with_i: String
+  phone_not_starts_with_i: String
+  phone_ends_with_i: String
+  phone_not_ends_with_i: String
+  phone_in: [String]
+  phone_not_in: [String]
 
   """
    condition must be true for all nodes
@@ -244,12 +266,15 @@ enum SortUsersBy {
   name_DESC
   email_ASC
   email_DESC
+  phone_ASC
+  phone_DESC
 }
 
 input UserOrderByInput {
   id: OrderDirection
   name: OrderDirection
   email: OrderDirection
+  phone: OrderDirection
 }
 
 enum OrderDirection {
@@ -261,11 +286,20 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
+  address: AddressRelateToOneInput
+  phone: String
   posts: PostRelateToManyInput
   reviews: ReviewRelateToManyInput
   orders: OrderRelateToManyInput
   profile_image: ImageFieldInput
   notifications: NotificationRelateToManyInput
+}
+
+input AddressRelateToOneInput {
+  create: AddressCreateInput
+  connect: AddressWhereUniqueInput
+  disconnect: AddressWhereUniqueInput
+  disconnectAll: Boolean
 }
 
 input PostRelateToManyInput {
@@ -315,6 +349,8 @@ input UserCreateInput {
   name: String
   email: String
   password: String
+  address: AddressRelateToOneInput
+  phone: String
   posts: PostRelateToManyInput
   reviews: ReviewRelateToManyInput
   orders: OrderRelateToManyInput
@@ -3822,6 +3858,211 @@ input PaymentMethodsCreateInput {
 }
 
 """
+ A keystone list
+"""
+type Address {
+  id: ID!
+  postal_code: Int
+  street: String
+  city: String
+  country: String
+  user: User
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+}
+
+input AddressWhereInput {
+  AND: [AddressWhereInput!]
+  OR: [AddressWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  postal_code: Int
+  postal_code_not: Int
+  postal_code_lt: Int
+  postal_code_lte: Int
+  postal_code_gt: Int
+  postal_code_gte: Int
+  postal_code_in: [Int]
+  postal_code_not_in: [Int]
+  street: String
+  street_not: String
+  street_contains: String
+  street_not_contains: String
+  street_starts_with: String
+  street_not_starts_with: String
+  street_ends_with: String
+  street_not_ends_with: String
+  street_i: String
+  street_not_i: String
+  street_contains_i: String
+  street_not_contains_i: String
+  street_starts_with_i: String
+  street_not_starts_with_i: String
+  street_ends_with_i: String
+  street_not_ends_with_i: String
+  street_in: [String]
+  street_not_in: [String]
+  city: String
+  city_not: String
+  city_contains: String
+  city_not_contains: String
+  city_starts_with: String
+  city_not_starts_with: String
+  city_ends_with: String
+  city_not_ends_with: String
+  city_i: String
+  city_not_i: String
+  city_contains_i: String
+  city_not_contains_i: String
+  city_starts_with_i: String
+  city_not_starts_with_i: String
+  city_ends_with_i: String
+  city_not_ends_with_i: String
+  city_in: [String]
+  city_not_in: [String]
+  country: String
+  country_not: String
+  country_contains: String
+  country_not_contains: String
+  country_starts_with: String
+  country_not_starts_with: String
+  country_ends_with: String
+  country_not_ends_with: String
+  country_i: String
+  country_not_i: String
+  country_contains_i: String
+  country_not_contains_i: String
+  country_starts_with_i: String
+  country_not_starts_with_i: String
+  country_ends_with_i: String
+  country_not_ends_with_i: String
+  country_in: [String]
+  country_not_in: [String]
+  user: UserWhereInput
+  user_is_null: Boolean
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+}
+
+input AddressWhereUniqueInput {
+  id: ID
+}
+
+enum SortAddressesBy {
+  id_ASC
+  id_DESC
+  postal_code_ASC
+  postal_code_DESC
+  street_ASC
+  street_DESC
+  city_ASC
+  city_DESC
+  country_ASC
+  country_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+}
+
+input AddressOrderByInput {
+  id: OrderDirection
+  postal_code: OrderDirection
+  street: OrderDirection
+  city: OrderDirection
+  country: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+}
+
+input AddressUpdateInput {
+  postal_code: Int
+  street: String
+  city: String
+  country: String
+  user: UserRelateToOneInput
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+}
+
+input AddressesUpdateInput {
+  id: ID!
+  data: AddressUpdateInput
+}
+
+input AddressCreateInput {
+  postal_code: Int
+  street: String
+  city: String
+  country: String
+  user: UserRelateToOneInput
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+}
+
+input AddressesCreateInput {
+  data: AddressCreateInput
+}
+
+"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -4355,6 +4596,36 @@ type Mutation {
    Delete multiple PaymentMethod items by ID.
   """
   deletePaymentMethods(ids: [ID!]): [PaymentMethod]
+
+  """
+   Create a single Address item.
+  """
+  createAddress(data: AddressCreateInput): Address
+
+  """
+   Create multiple Address items.
+  """
+  createAddresses(data: [AddressesCreateInput]): [Address]
+
+  """
+   Update a single Address item by ID.
+  """
+  updateAddress(id: ID!, data: AddressUpdateInput): Address
+
+  """
+   Update multiple Address items by ID.
+  """
+  updateAddresses(data: [AddressesUpdateInput]): [Address]
+
+  """
+   Delete a single Address item by ID.
+  """
+  deleteAddress(id: ID!): Address
+
+  """
+   Delete multiple Address items by ID.
+  """
+  deleteAddresses(ids: [ID!]): [Address]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -4992,6 +5263,41 @@ type Query {
       reason: "This query will be removed in a future version. Please use paymentMethodsCount instead."
     )
   paymentMethodsCount(where: PaymentMethodWhereInput! = {}): Int
+
+  """
+   Search for all Address items which match the where clause.
+  """
+  allAddresses(
+    where: AddressWhereInput! = {}
+    search: String
+    sortBy: [SortAddressesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AddressOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Address!]
+
+  """
+   Search for the Address item with the matching ID.
+  """
+  Address(where: AddressWhereUniqueInput!): Address
+
+  """
+   Perform a meta-query on all Address items which match the where clause.
+  """
+  _allAddressesMeta(
+    where: AddressWhereInput! = {}
+    search: String
+    sortBy: [SortAddressesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AddressOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use addressesCount instead."
+    )
+  addressesCount(where: AddressWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

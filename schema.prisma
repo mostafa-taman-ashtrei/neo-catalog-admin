@@ -13,6 +13,8 @@ model User {
   name                         String?
   email                        String?         @unique
   password                     String?
+  address                      Address?        @relation("Address_user")
+  phone                        String?
   posts                        Post[]          @relation("Post_author")
   reviews                      Review[]        @relation("Review_customer")
   orders                       Order[]         @relation("Order_customer")
@@ -271,4 +273,18 @@ model PaymentMethod {
   customers      User[]    @relation("PaymentMethod_customers_many")
   orders         Order[]   @relation("Order_payment_method")
   currency       String?
+}
+
+model Address {
+  id          Int       @id @default(autoincrement())
+  postal_code Int?
+  street      String?
+  city        String?
+  country     String?
+  user        User?     @relation("Address_user", fields: [userId], references: [id])
+  userId      Int?      @unique @map("user")
+  created_at  DateTime?
+  updated_at  DateTime?
+  deleted_at  DateTime?
+  is_deleted  String?
 }

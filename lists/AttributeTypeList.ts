@@ -4,7 +4,7 @@ import { list } from '@keystone-next/keystone/schema';
 const attributeTypeList = list({
     ui: {
         listView: {
-            initialColumns: ['attribute_value', 'attribute_type'],
+            initialColumns: ['attribute_type', 'attribute'],
         },
     },
 
@@ -13,8 +13,7 @@ const attributeTypeList = list({
         updated_at: timestamp(),
         deleted_at: timestamp({ isRequired: false }), // the deleted_at fiels is used for soft deletes  
         is_deleted: text({ isRequired: true, defaultValue: 'false' }),
-        attribute_value: relationship({ ref: 'ProductAttribute', many: true }),
-        // The attribute value will probably change later on
+        attribute: relationship({ ref: 'Attribute', many: true }),
         attribute_type: select({
             options: [
                 { value: 'text', label: 'text' },

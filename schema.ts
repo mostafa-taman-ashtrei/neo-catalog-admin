@@ -17,6 +17,7 @@ import productAttributeList from './lists/ProductAttribute';
 import productTypeAttributeList from './lists/productTypeAttributeList';
 import paymentMethodList from './lists/paymentList';
 import addressList from './lists/addressList';
+import attributeList from './lists/AttributeList';
 
 export const lists = createSchema({
     User: userList,
@@ -37,4 +38,5 @@ export const lists = createSchema({
     ProductTypeAttribute: productTypeAttributeList,
     PaymentMethod: paymentMethodList,
     Address: addressList,
+    Attribute: attributeList,
 });

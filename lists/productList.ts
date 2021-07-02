@@ -4,7 +4,7 @@ import { list } from '@keystone-next/keystone/schema';
 const productList = list({
     ui: {
         listView: {
-            initialColumns: ['title', 'product_type', 'price', 'status', 'image', 'reviews', 'manufacturer', 'category', 'tags', 'tax', 'is_discounted', 'discount'],
+            initialColumns: ['title', 'product_type', 'product_attributes', 'price', 'status', 'image', 'reviews', 'manufacturer', 'category', 'tags', 'tax', 'is_discounted', 'discount'],
         },
     },
 
@@ -59,6 +59,7 @@ const productList = list({
             many: true,
         }),
         product_type: relationship({ ref: 'ProductType.products' }),
+        product_attributes: relationship({ ref: 'ProductAttribute.product' }),
     },
 });
 

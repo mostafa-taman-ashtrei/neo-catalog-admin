@@ -4,7 +4,7 @@ import { list } from '@keystone-next/keystone/schema';
 const productAttributeList = list({
     ui: {
         listView: {
-            initialColumns: ['color', 'size', 'attribute_type'],
+            initialColumns: ['color', 'size', 'product'],
         },
     },
 
@@ -20,7 +20,7 @@ const productAttributeList = list({
         weight: decimal(),
         packaging: text(),
         design: text(),
-        attribute_type: relationship({ ref: 'AttributeType' })
+        product: relationship({ ref: 'Product.product_attributes' })
     },
 });
 

@@ -587,6 +587,7 @@ type Product {
     )
   tagsCount(where: TagWhereInput! = {}): Int
   product_type: ProductType
+  product_attributes: ProductAttribute
 }
 
 input ProductWhereInput {
@@ -814,6 +815,8 @@ input ProductWhereInput {
   tags_none: TagWhereInput
   product_type: ProductTypeWhereInput
   product_type_is_null: Boolean
+  product_attributes: ProductAttributeWhereInput
+  product_attributes_is_null: Boolean
 }
 
 input ProductWhereUniqueInput {
@@ -890,6 +893,7 @@ input ProductUpdateInput {
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
   product_type: ProductTypeRelateToOneInput
+  product_attributes: ProductAttributeRelateToOneInput
 }
 
 input ManufacturerRelateToOneInput {
@@ -934,6 +938,13 @@ input ProductTypeRelateToOneInput {
   disconnectAll: Boolean
 }
 
+input ProductAttributeRelateToOneInput {
+  create: ProductAttributeCreateInput
+  connect: ProductAttributeWhereUniqueInput
+  disconnect: ProductAttributeWhereUniqueInput
+  disconnectAll: Boolean
+}
+
 input ProductsUpdateInput {
   id: ID!
   data: ProductUpdateInput
@@ -961,6 +972,7 @@ input ProductCreateInput {
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
   product_type: ProductTypeRelateToOneInput
+  product_attributes: ProductAttributeRelateToOneInput
 }
 
 input ProductsCreateInput {
@@ -2759,7 +2771,7 @@ type ProductType {
   updated_at: String
   deleted_at: String
   is_deleted: String
-  product_type: String
+  product_type_name: String
   product_type_attributes(
     where: ProductTypeAttributeWhereInput! = {}
     search: String
@@ -2859,24 +2871,24 @@ input ProductTypeWhereInput {
   is_deleted_not_ends_with_i: String
   is_deleted_in: [String]
   is_deleted_not_in: [String]
-  product_type: String
-  product_type_not: String
-  product_type_contains: String
-  product_type_not_contains: String
-  product_type_starts_with: String
-  product_type_not_starts_with: String
-  product_type_ends_with: String
-  product_type_not_ends_with: String
-  product_type_i: String
-  product_type_not_i: String
-  product_type_contains_i: String
-  product_type_not_contains_i: String
-  product_type_starts_with_i: String
-  product_type_not_starts_with_i: String
-  product_type_ends_with_i: String
-  product_type_not_ends_with_i: String
-  product_type_in: [String]
-  product_type_not_in: [String]
+  product_type_name: String
+  product_type_name_not: String
+  product_type_name_contains: String
+  product_type_name_not_contains: String
+  product_type_name_starts_with: String
+  product_type_name_not_starts_with: String
+  product_type_name_ends_with: String
+  product_type_name_not_ends_with: String
+  product_type_name_i: String
+  product_type_name_not_i: String
+  product_type_name_contains_i: String
+  product_type_name_not_contains_i: String
+  product_type_name_starts_with_i: String
+  product_type_name_not_starts_with_i: String
+  product_type_name_ends_with_i: String
+  product_type_name_not_ends_with_i: String
+  product_type_name_in: [String]
+  product_type_name_not_in: [String]
 
   """
    condition must be true for all nodes
@@ -2924,8 +2936,8 @@ enum SortProductTypesBy {
   deleted_at_DESC
   is_deleted_ASC
   is_deleted_DESC
-  product_type_ASC
-  product_type_DESC
+  product_type_name_ASC
+  product_type_name_DESC
 }
 
 input ProductTypeOrderByInput {
@@ -2934,7 +2946,7 @@ input ProductTypeOrderByInput {
   updated_at: OrderDirection
   deleted_at: OrderDirection
   is_deleted: OrderDirection
-  product_type: OrderDirection
+  product_type_name: OrderDirection
 }
 
 input ProductTypeUpdateInput {
@@ -2942,7 +2954,7 @@ input ProductTypeUpdateInput {
   updated_at: String
   deleted_at: String
   is_deleted: String
-  product_type: String
+  product_type_name: String
   product_type_attributes: ProductTypeAttributeRelateToManyInput
   products: ProductRelateToManyInput
 }
@@ -2964,7 +2976,7 @@ input ProductTypeCreateInput {
   updated_at: String
   deleted_at: String
   is_deleted: String
-  product_type: String
+  product_type_name: String
   product_type_attributes: ProductTypeAttributeRelateToManyInput
   products: ProductRelateToManyInput
 }
@@ -2989,7 +3001,7 @@ type ProductAttribute {
   weight: String
   packaging: String
   design: String
-  attribute_type: AttributeType
+  product: Product
 }
 
 input ProductAttributeWhereInput {
@@ -3159,8 +3171,8 @@ input ProductAttributeWhereInput {
   design_not_ends_with_i: String
   design_in: [String]
   design_not_in: [String]
-  attribute_type: AttributeTypeWhereInput
-  attribute_type_is_null: Boolean
+  product: ProductWhereInput
+  product_is_null: Boolean
 }
 
 input ProductAttributeWhereUniqueInput {
@@ -3221,14 +3233,7 @@ input ProductAttributeUpdateInput {
   weight: String
   packaging: String
   design: String
-  attribute_type: AttributeTypeRelateToOneInput
-}
-
-input AttributeTypeRelateToOneInput {
-  create: AttributeTypeCreateInput
-  connect: AttributeTypeWhereUniqueInput
-  disconnect: AttributeTypeWhereUniqueInput
-  disconnectAll: Boolean
+  product: ProductRelateToOneInput
 }
 
 input ProductAttributesUpdateInput {
@@ -3248,7 +3253,7 @@ input ProductAttributeCreateInput {
   weight: String
   packaging: String
   design: String
-  attribute_type: AttributeTypeRelateToOneInput
+  product: ProductRelateToOneInput
 }
 
 input ProductAttributesCreateInput {
@@ -3264,28 +3269,28 @@ type AttributeType {
   updated_at: String
   deleted_at: String
   is_deleted: String
-  attribute_value(
-    where: ProductAttributeWhereInput! = {}
+  attribute(
+    where: AttributeWhereInput! = {}
     search: String
-    sortBy: [SortProductAttributesBy!]
+    sortBy: [SortAttributesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductAttributeOrderByInput!]! = []
+    orderBy: [AttributeOrderByInput!]! = []
     first: Int
     skip: Int! = 0
-  ): [ProductAttribute!]
-  _attribute_valueMeta(
-    where: ProductAttributeWhereInput! = {}
+  ): [Attribute!]
+  _attributeMeta(
+    where: AttributeWhereInput! = {}
     search: String
-    sortBy: [SortProductAttributesBy!]
+    sortBy: [SortAttributesBy!]
       @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductAttributeOrderByInput!]! = []
+    orderBy: [AttributeOrderByInput!]! = []
     first: Int
     skip: Int! = 0
   ): _QueryMeta
     @deprecated(
-      reason: "This query will be removed in a future version. Please use attribute_valueCount instead."
+      reason: "This query will be removed in a future version. Please use attributeCount instead."
     )
-  attribute_valueCount(where: ProductAttributeWhereInput! = {}): Int
+  attributeCount(where: AttributeWhereInput! = {}): Int
   attribute_type: String
 }
 
@@ -3346,17 +3351,17 @@ input AttributeTypeWhereInput {
   """
    condition must be true for all nodes
   """
-  attribute_value_every: ProductAttributeWhereInput
+  attribute_every: AttributeWhereInput
 
   """
    condition must be true for at least 1 node
   """
-  attribute_value_some: ProductAttributeWhereInput
+  attribute_some: AttributeWhereInput
 
   """
    condition must be false for all nodes
   """
-  attribute_value_none: ProductAttributeWhereInput
+  attribute_none: AttributeWhereInput
   attribute_type: String
   attribute_type_not: String
   attribute_type_in: [String]
@@ -3396,14 +3401,14 @@ input AttributeTypeUpdateInput {
   updated_at: String
   deleted_at: String
   is_deleted: String
-  attribute_value: ProductAttributeRelateToManyInput
+  attribute: AttributeRelateToManyInput
   attribute_type: String
 }
 
-input ProductAttributeRelateToManyInput {
-  create: [ProductAttributeCreateInput]
-  connect: [ProductAttributeWhereUniqueInput]
-  disconnect: [ProductAttributeWhereUniqueInput]
+input AttributeRelateToManyInput {
+  create: [AttributeCreateInput]
+  connect: [AttributeWhereUniqueInput]
+  disconnect: [AttributeWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -3417,7 +3422,7 @@ input AttributeTypeCreateInput {
   updated_at: String
   deleted_at: String
   is_deleted: String
-  attribute_value: ProductAttributeRelateToManyInput
+  attribute: AttributeRelateToManyInput
   attribute_type: String
 }
 
@@ -3456,28 +3461,7 @@ type ProductTypeAttribute {
       reason: "This query will be removed in a future version. Please use product_typeCount instead."
     )
   product_typeCount(where: ProductTypeWhereInput! = {}): Int
-  attributes(
-    where: ProductAttributeWhereInput! = {}
-    search: String
-    sortBy: [SortProductAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductAttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [ProductAttribute!]
-  _attributesMeta(
-    where: ProductAttributeWhereInput! = {}
-    search: String
-    sortBy: [SortProductAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductAttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use attributesCount instead."
-    )
-  attributesCount(where: ProductAttributeWhereInput! = {}): Int
+  attribute: Attribute
 }
 
 input ProductTypeAttributeWhereInput {
@@ -3548,21 +3532,8 @@ input ProductTypeAttributeWhereInput {
    condition must be false for all nodes
   """
   product_type_none: ProductTypeWhereInput
-
-  """
-   condition must be true for all nodes
-  """
-  attributes_every: ProductAttributeWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  attributes_some: ProductAttributeWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  attributes_none: ProductAttributeWhereInput
+  attribute: AttributeWhereInput
+  attribute_is_null: Boolean
 }
 
 input ProductTypeAttributeWhereUniqueInput {
@@ -3596,13 +3567,20 @@ input ProductTypeAttributeUpdateInput {
   deleted_at: String
   is_deleted: String
   product_type: ProductTypeRelateToManyInput
-  attributes: ProductAttributeRelateToManyInput
+  attribute: AttributeRelateToOneInput
 }
 
 input ProductTypeRelateToManyInput {
   create: [ProductTypeCreateInput]
   connect: [ProductTypeWhereUniqueInput]
   disconnect: [ProductTypeWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input AttributeRelateToOneInput {
+  create: AttributeCreateInput
+  connect: AttributeWhereUniqueInput
+  disconnect: AttributeWhereUniqueInput
   disconnectAll: Boolean
 }
 
@@ -3617,7 +3595,7 @@ input ProductTypeAttributeCreateInput {
   deleted_at: String
   is_deleted: String
   product_type: ProductTypeRelateToManyInput
-  attributes: ProductAttributeRelateToManyInput
+  attribute: AttributeRelateToOneInput
 }
 
 input ProductTypeAttributesCreateInput {
@@ -4060,6 +4038,156 @@ input AddressCreateInput {
 
 input AddressesCreateInput {
   data: AddressCreateInput
+}
+
+"""
+ A keystone list
+"""
+type Attribute {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  attribute_type: AttributeType
+  attribute: String
+}
+
+input AttributeWhereInput {
+  AND: [AttributeWhereInput!]
+  OR: [AttributeWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  attribute_type: AttributeTypeWhereInput
+  attribute_type_is_null: Boolean
+  attribute: String
+  attribute_not: String
+  attribute_contains: String
+  attribute_not_contains: String
+  attribute_starts_with: String
+  attribute_not_starts_with: String
+  attribute_ends_with: String
+  attribute_not_ends_with: String
+  attribute_i: String
+  attribute_not_i: String
+  attribute_contains_i: String
+  attribute_not_contains_i: String
+  attribute_starts_with_i: String
+  attribute_not_starts_with_i: String
+  attribute_ends_with_i: String
+  attribute_not_ends_with_i: String
+  attribute_in: [String]
+  attribute_not_in: [String]
+}
+
+input AttributeWhereUniqueInput {
+  id: ID
+}
+
+enum SortAttributesBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  attribute_ASC
+  attribute_DESC
+}
+
+input AttributeOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  attribute: OrderDirection
+}
+
+input AttributeUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  attribute_type: AttributeTypeRelateToOneInput
+  attribute: String
+}
+
+input AttributeTypeRelateToOneInput {
+  create: AttributeTypeCreateInput
+  connect: AttributeTypeWhereUniqueInput
+  disconnect: AttributeTypeWhereUniqueInput
+  disconnectAll: Boolean
+}
+
+input AttributesUpdateInput {
+  id: ID!
+  data: AttributeUpdateInput
+}
+
+input AttributeCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  attribute_type: AttributeTypeRelateToOneInput
+  attribute: String
+}
+
+input AttributesCreateInput {
+  data: AttributeCreateInput
 }
 
 """
@@ -4626,6 +4754,36 @@ type Mutation {
    Delete multiple Address items by ID.
   """
   deleteAddresses(ids: [ID!]): [Address]
+
+  """
+   Create a single Attribute item.
+  """
+  createAttribute(data: AttributeCreateInput): Attribute
+
+  """
+   Create multiple Attribute items.
+  """
+  createAttributes(data: [AttributesCreateInput]): [Attribute]
+
+  """
+   Update a single Attribute item by ID.
+  """
+  updateAttribute(id: ID!, data: AttributeUpdateInput): Attribute
+
+  """
+   Update multiple Attribute items by ID.
+  """
+  updateAttributes(data: [AttributesUpdateInput]): [Attribute]
+
+  """
+   Delete a single Attribute item by ID.
+  """
+  deleteAttribute(id: ID!): Attribute
+
+  """
+   Delete multiple Attribute items by ID.
+  """
+  deleteAttributes(ids: [ID!]): [Attribute]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -5298,6 +5456,41 @@ type Query {
       reason: "This query will be removed in a future version. Please use addressesCount instead."
     )
   addressesCount(where: AddressWhereInput! = {}): Int
+
+  """
+   Search for all Attribute items which match the where clause.
+  """
+  allAttributes(
+    where: AttributeWhereInput! = {}
+    search: String
+    sortBy: [SortAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [Attribute!]
+
+  """
+   Search for the Attribute item with the matching ID.
+  """
+  Attribute(where: AttributeWhereUniqueInput!): Attribute
+
+  """
+   Perform a meta-query on all Attribute items which match the where clause.
+  """
+  _allAttributesMeta(
+    where: AttributeWhereInput! = {}
+    search: String
+    sortBy: [SortAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [AttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use attributesCount instead."
+    )
+  attributesCount(where: AttributeWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

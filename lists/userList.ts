@@ -13,7 +13,6 @@ const userList = list({
         password: password({ isRequired: true }),
         address: relationship({ ref: 'Address.user' }),
         phone: text(),
-        posts: relationship({ ref: 'Post.author', many: true }),
         reviews: relationship({ ref: 'Review.customer', many: true }),
         orders: relationship({ ref: 'Order.customer', many: true }),
         profile_image: image(),

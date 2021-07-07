@@ -15,7 +15,6 @@ model User {
   password                     String?
   address                      Address?        @relation("Address_user")
   phone                        String?
-  posts                        Post[]          @relation("Post_author")
   reviews                      Review[]        @relation("Review_customer")
   orders                       Order[]         @relation("Order_customer")
   profile_image_filesize       Int?
@@ -26,18 +25,6 @@ model User {
   profile_image_id             String?
   notifications                Notification[]  @relation("Notification_customer")
   from_PaymentMethod_customers PaymentMethod[] @relation("PaymentMethod_customers_many")
-}
-
-model Post {
-  id          Int       @id @default(autoincrement())
-  title       String?
-  status      String?
-  content     Json?
-  publishDate DateTime?
-  author      User?     @relation("Post_author", fields: [authorId], references: [id])
-  authorId    Int?      @map("author")
-
-  @@index([authorId])
 }
 
 model Product {

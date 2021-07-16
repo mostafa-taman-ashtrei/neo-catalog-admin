@@ -60,6 +60,7 @@ model Product {
   product_typeId       Int?              @map("product_type")
   product_attributes   ProductAttribute? @relation("Product_product_attributes", fields: [product_attributesId], references: [id])
   product_attributesId Int?              @unique @map("product_attributes")
+  product_sku          ProductSku[]      @relation("ProductSku_products")
 
   @@index([manufacturerId])
   @@index([categoryId])
@@ -289,4 +290,29 @@ model Attribute {
   from_ProductTypeAttribute_attribute ProductTypeAttribute[] @relation("ProductTypeAttribute_attribute")
 
   @@index([attribute_typeId])
+}
+
+model ProductSku {
+  id            Int                   @id @default(autoincrement())
+  created_at    DateTime?
+  updated_at    DateTime?
+  deleted_at    DateTime?
+  is_deleted    String?
+  products      Product?              @relation("ProductSku_products", fields: [productsId], references: [id])
+  productsId    Int?                  @map("products")
+  sku           String?
+  sku_attribute ProductSkuAttribute[] @relation("ProductSku_sku_attribute_ProductSkuAttribute_product_sku")
+
+  @@index([productsId])
+}
+
+model ProductSkuAttribute {
+  id          Int          @id @default(autoincrement())
+  created_at  DateTime?
+  updated_at  DateTime?
+  deleted_at  DateTime?
+  is_deleted  String?
+  product_sku ProductSku[] @relation("ProductSku_sku_attribute_ProductSkuAttribute_product_sku")
+  name        String?
+  value       String?
 }

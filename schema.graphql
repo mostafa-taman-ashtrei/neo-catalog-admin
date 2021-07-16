@@ -427,6 +427,28 @@ type Product {
   tagsCount(where: TagWhereInput! = {}): Int
   product_type: ProductType
   product_attributes: ProductAttribute
+  product_sku(
+    where: ProductSkuWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkusBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductSku!]
+  _product_skuMeta(
+    where: ProductSkuWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkusBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use product_skuCount instead."
+    )
+  product_skuCount(where: ProductSkuWhereInput! = {}): Int
 }
 
 input ProductWhereInput {
@@ -656,6 +678,21 @@ input ProductWhereInput {
   product_type_is_null: Boolean
   product_attributes: ProductAttributeWhereInput
   product_attributes_is_null: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  product_sku_every: ProductSkuWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  product_sku_some: ProductSkuWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  product_sku_none: ProductSkuWhereInput
 }
 
 input ProductWhereUniqueInput {
@@ -733,6 +770,7 @@ input ProductUpdateInput {
   tags: TagRelateToManyInput
   product_type: ProductTypeRelateToOneInput
   product_attributes: ProductAttributeRelateToOneInput
+  product_sku: ProductSkuRelateToManyInput
 }
 
 input ManufacturerRelateToOneInput {
@@ -784,6 +822,13 @@ input ProductAttributeRelateToOneInput {
   disconnectAll: Boolean
 }
 
+input ProductSkuRelateToManyInput {
+  create: [ProductSkuCreateInput]
+  connect: [ProductSkuWhereUniqueInput]
+  disconnect: [ProductSkuWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
 input ProductsUpdateInput {
   id: ID!
   data: ProductUpdateInput
@@ -812,6 +857,7 @@ input ProductCreateInput {
   tags: TagRelateToManyInput
   product_type: ProductTypeRelateToOneInput
   product_attributes: ProductAttributeRelateToOneInput
+  product_sku: ProductSkuRelateToManyInput
 }
 
 input ProductsCreateInput {
@@ -4037,6 +4083,396 @@ input AttributesCreateInput {
 }
 
 """
+ A keystone list
+"""
+type ProductSku {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  products: Product
+  sku: String
+  sku_attribute(
+    where: ProductSkuAttributeWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkuAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuAttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductSkuAttribute!]
+  _sku_attributeMeta(
+    where: ProductSkuAttributeWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkuAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuAttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use sku_attributeCount instead."
+    )
+  sku_attributeCount(where: ProductSkuAttributeWhereInput! = {}): Int
+}
+
+input ProductSkuWhereInput {
+  AND: [ProductSkuWhereInput!]
+  OR: [ProductSkuWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  products: ProductWhereInput
+  products_is_null: Boolean
+  sku: String
+  sku_not: String
+  sku_contains: String
+  sku_not_contains: String
+  sku_starts_with: String
+  sku_not_starts_with: String
+  sku_ends_with: String
+  sku_not_ends_with: String
+  sku_i: String
+  sku_not_i: String
+  sku_contains_i: String
+  sku_not_contains_i: String
+  sku_starts_with_i: String
+  sku_not_starts_with_i: String
+  sku_ends_with_i: String
+  sku_not_ends_with_i: String
+  sku_in: [String]
+  sku_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  sku_attribute_every: ProductSkuAttributeWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  sku_attribute_some: ProductSkuAttributeWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  sku_attribute_none: ProductSkuAttributeWhereInput
+}
+
+input ProductSkuWhereUniqueInput {
+  id: ID
+}
+
+enum SortProductSkusBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  sku_ASC
+  sku_DESC
+}
+
+input ProductSkuOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  sku: OrderDirection
+}
+
+input ProductSkuUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  products: ProductRelateToOneInput
+  sku: String
+  sku_attribute: ProductSkuAttributeRelateToManyInput
+}
+
+input ProductSkuAttributeRelateToManyInput {
+  create: [ProductSkuAttributeCreateInput]
+  connect: [ProductSkuAttributeWhereUniqueInput]
+  disconnect: [ProductSkuAttributeWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input ProductSkusUpdateInput {
+  id: ID!
+  data: ProductSkuUpdateInput
+}
+
+input ProductSkuCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  products: ProductRelateToOneInput
+  sku: String
+  sku_attribute: ProductSkuAttributeRelateToManyInput
+}
+
+input ProductSkusCreateInput {
+  data: ProductSkuCreateInput
+}
+
+"""
+ A keystone list
+"""
+type ProductSkuAttribute {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  product_sku(
+    where: ProductSkuWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkusBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductSku!]
+  _product_skuMeta(
+    where: ProductSkuWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkusBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use product_skuCount instead."
+    )
+  product_skuCount(where: ProductSkuWhereInput! = {}): Int
+  name: String
+  value: String
+}
+
+input ProductSkuAttributeWhereInput {
+  AND: [ProductSkuAttributeWhereInput!]
+  OR: [ProductSkuAttributeWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+
+  """
+   condition must be true for all nodes
+  """
+  product_sku_every: ProductSkuWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  product_sku_some: ProductSkuWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  product_sku_none: ProductSkuWhereInput
+  name: String
+  name_not: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  name_i: String
+  name_not_i: String
+  name_contains_i: String
+  name_not_contains_i: String
+  name_starts_with_i: String
+  name_not_starts_with_i: String
+  name_ends_with_i: String
+  name_not_ends_with_i: String
+  name_in: [String]
+  name_not_in: [String]
+  value: String
+  value_not: String
+  value_contains: String
+  value_not_contains: String
+  value_starts_with: String
+  value_not_starts_with: String
+  value_ends_with: String
+  value_not_ends_with: String
+  value_i: String
+  value_not_i: String
+  value_contains_i: String
+  value_not_contains_i: String
+  value_starts_with_i: String
+  value_not_starts_with_i: String
+  value_ends_with_i: String
+  value_not_ends_with_i: String
+  value_in: [String]
+  value_not_in: [String]
+}
+
+input ProductSkuAttributeWhereUniqueInput {
+  id: ID
+}
+
+enum SortProductSkuAttributesBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  name_ASC
+  name_DESC
+  value_ASC
+  value_DESC
+}
+
+input ProductSkuAttributeOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  name: OrderDirection
+  value: OrderDirection
+}
+
+input ProductSkuAttributeUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  product_sku: ProductSkuRelateToManyInput
+  name: String
+  value: String
+}
+
+input ProductSkuAttributesUpdateInput {
+  id: ID!
+  data: ProductSkuAttributeUpdateInput
+}
+
+input ProductSkuAttributeCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  product_sku: ProductSkuRelateToManyInput
+  name: String
+  value: String
+}
+
+input ProductSkuAttributesCreateInput {
+  data: ProductSkuAttributeCreateInput
+}
+
+"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -4600,6 +5036,75 @@ type Mutation {
    Delete multiple Attribute items by ID.
   """
   deleteAttributes(ids: [ID!]): [Attribute]
+
+  """
+   Create a single ProductSku item.
+  """
+  createProductSku(data: ProductSkuCreateInput): ProductSku
+
+  """
+   Create multiple ProductSku items.
+  """
+  createProductSkus(data: [ProductSkusCreateInput]): [ProductSku]
+
+  """
+   Update a single ProductSku item by ID.
+  """
+  updateProductSku(id: ID!, data: ProductSkuUpdateInput): ProductSku
+
+  """
+   Update multiple ProductSku items by ID.
+  """
+  updateProductSkus(data: [ProductSkusUpdateInput]): [ProductSku]
+
+  """
+   Delete a single ProductSku item by ID.
+  """
+  deleteProductSku(id: ID!): ProductSku
+
+  """
+   Delete multiple ProductSku items by ID.
+  """
+  deleteProductSkus(ids: [ID!]): [ProductSku]
+
+  """
+   Create a single ProductSkuAttribute item.
+  """
+  createProductSkuAttribute(
+    data: ProductSkuAttributeCreateInput
+  ): ProductSkuAttribute
+
+  """
+   Create multiple ProductSkuAttribute items.
+  """
+  createProductSkuAttributes(
+    data: [ProductSkuAttributesCreateInput]
+  ): [ProductSkuAttribute]
+
+  """
+   Update a single ProductSkuAttribute item by ID.
+  """
+  updateProductSkuAttribute(
+    id: ID!
+    data: ProductSkuAttributeUpdateInput
+  ): ProductSkuAttribute
+
+  """
+   Update multiple ProductSkuAttribute items by ID.
+  """
+  updateProductSkuAttributes(
+    data: [ProductSkuAttributesUpdateInput]
+  ): [ProductSkuAttribute]
+
+  """
+   Delete a single ProductSkuAttribute item by ID.
+  """
+  deleteProductSkuAttribute(id: ID!): ProductSkuAttribute
+
+  """
+   Delete multiple ProductSkuAttribute items by ID.
+  """
+  deleteProductSkuAttributes(ids: [ID!]): [ProductSkuAttribute]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -5272,6 +5777,78 @@ type Query {
       reason: "This query will be removed in a future version. Please use attributesCount instead."
     )
   attributesCount(where: AttributeWhereInput! = {}): Int
+
+  """
+   Search for all ProductSku items which match the where clause.
+  """
+  allProductSkus(
+    where: ProductSkuWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkusBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductSku!]
+
+  """
+   Search for the ProductSku item with the matching ID.
+  """
+  ProductSku(where: ProductSkuWhereUniqueInput!): ProductSku
+
+  """
+   Perform a meta-query on all ProductSku items which match the where clause.
+  """
+  _allProductSkusMeta(
+    where: ProductSkuWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkusBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productSkusCount instead."
+    )
+  productSkusCount(where: ProductSkuWhereInput! = {}): Int
+
+  """
+   Search for all ProductSkuAttribute items which match the where clause.
+  """
+  allProductSkuAttributes(
+    where: ProductSkuAttributeWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkuAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuAttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductSkuAttribute!]
+
+  """
+   Search for the ProductSkuAttribute item with the matching ID.
+  """
+  ProductSkuAttribute(
+    where: ProductSkuAttributeWhereUniqueInput!
+  ): ProductSkuAttribute
+
+  """
+   Perform a meta-query on all ProductSkuAttribute items which match the where clause.
+  """
+  _allProductSkuAttributesMeta(
+    where: ProductSkuAttributeWhereInput! = {}
+    search: String
+    sortBy: [SortProductSkuAttributesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductSkuAttributeOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productSkuAttributesCount instead."
+    )
+  productSkuAttributesCount(where: ProductSkuAttributeWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

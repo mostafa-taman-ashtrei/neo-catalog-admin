@@ -12,6 +12,7 @@ const ordersProductList = list({
         product_quantity: integer({ isRequired: true }),
         product_price: decimal({ isRequired: true }),
         products_tax: decimal(),
+        products_discount: decimal(),
         products_final_price: decimal(), // the price can change if the product is discounted
     },
 });

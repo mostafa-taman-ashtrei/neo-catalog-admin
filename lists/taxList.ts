@@ -16,7 +16,16 @@ const taxList = list({
         tax_name: text({ isRequired: true }),
         tax_rate: decimal({ isRequired: true }),
         tax_description: text(),
-        products: relationship({ ref: 'Product.tax', many: true })
+        products: relationship({
+            ref: 'Product.tax',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['title', 'price'],
+                linkToItem: true,
+                inlineConnect: true
+            },
+            many: true
+        })
     },
 });
 

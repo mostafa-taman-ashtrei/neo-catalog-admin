@@ -23,9 +23,27 @@ const paymentMethodList = list({
                 displayMode: 'segmented-control',
             },
         }),
-        customers: relationship({ ref: 'User', many: true }),
-        orders: relationship({ ref: 'Order.payment_method', many: true }),
         currency: text({ isRequired: true }),
+        customers: relationship({
+            ref: 'User',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['name', 'email'],
+                linkToItem: true,
+                inlineConnect: true
+            },
+            many: true
+        }),
+        orders: relationship({
+            ref: 'Order.payment_method',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['status', ' order_total'],
+                linkToItem: true,
+                inlineConnect: true
+            },
+            many: true
+        }),
     },
 });
 

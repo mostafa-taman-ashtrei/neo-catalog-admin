@@ -15,6 +15,12 @@ const tagList = list({
         name: text({ isRequired: true }),
         products: relationship({
             ref: 'Product.tags',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['title', 'price'],
+                linkToItem: true,
+                inlineConnect: true,
+            },
             many: true,
         }),
     },

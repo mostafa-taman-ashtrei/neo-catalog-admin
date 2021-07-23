@@ -9,7 +9,7 @@ const categoryList = list({
     },
     fields: {
         name: text({ isRequired: true }),
-        num_of_products: integer({ isRequired: true }),
+        num_of_products: integer({ defaultValue: 0 }),
         image: image(),
         created_at: timestamp({ defaultValue: Date() }),
         updated_at: timestamp(),
@@ -18,6 +18,12 @@ const categoryList = list({
         description: text(),
         products: relationship({
             ref: 'Product.category',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['title', 'price'],
+                inlineConnect: true,
+                linkToItem: true
+            },
             many: true,
         }),
     },

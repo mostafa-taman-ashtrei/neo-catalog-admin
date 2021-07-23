@@ -18,10 +18,9 @@ const reviewsList = list({
             ref: 'Product.reviews',
             ui: {
                 displayMode: 'cards',
-                cardFields: ['title', 'description'],
-                inlineEdit: { fields: ['title', 'description'] },
+                cardFields: ['title', 'price'],
                 linkToItem: true,
-                inlineCreate: { fields: ['title', 'description'] },
+                inlineConnect: true
             },
         }),
         customer: relationship({
@@ -29,9 +28,8 @@ const reviewsList = list({
             ui: {
                 displayMode: 'cards',
                 cardFields: ['name', 'email'],
-                inlineEdit: { fields: ['name', 'email'] },
                 linkToItem: true,
-                inlineCreate: { fields: ['name', 'email'] },
+                inlineConnect: true
             },
         }),
     },

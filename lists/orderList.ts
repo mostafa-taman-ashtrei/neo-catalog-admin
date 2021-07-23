@@ -19,7 +19,15 @@ const orderList = list({
         billing_country: text({ isRequired: true }),
         delivery_street_address: text({ isRequired: true }),
         delivery_name: text({ isRequired: true }),
-        payment_method: relationship({ ref: 'PaymentMethod.orders' }),
+        payment_method: relationship({
+            ref: 'PaymentMethod.orders',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['payment_method', 'currency'],
+                linkToItem: true,
+                inlineConnect: true
+            },
+        }),
         status: select({
             options: [
                 { value: 'Inprogress', label: 'Inprogress' },
@@ -37,10 +45,19 @@ const orderList = list({
                 cardFields: ['name'],
                 inlineEdit: { fields: ['name'] },
                 linkToItem: true,
-                inlineCreate: { fields: ['name'] },
+                inlineConnect: true,
             },
         }),
-        orders_product: relationship({ ref: 'OrdersProduct', many: true }),
+        orders_product: relationship({
+            ref: 'OrdersProduct',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['product_title', 'product_quantity', 'products_final_price'],
+                inlineConnect: true,
+                linkToItem: true
+            },
+            many: true
+        }),
     },
 });
 

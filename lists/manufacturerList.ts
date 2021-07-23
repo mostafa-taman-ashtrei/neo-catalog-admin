@@ -15,7 +15,16 @@ const manufacturerList = list({
         is_deleted: text({ isRequired: true, defaultValue: 'false' }),
         image: image({ isRequired: true }),
         name: text({ isRequired: true }),
-        products: relationship({ ref: 'Product.manufacturer', many: true }),
+        products: relationship({
+            ref: 'Product.manufacturer',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['title', 'description'],
+                inlineConnect: true,
+                linkToItem: true,
+            },
+            many: true
+        }),
     },
 });
 

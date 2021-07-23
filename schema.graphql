@@ -328,10 +328,12 @@ type Product {
   updated_at: String
   deleted_at: String
   is_deleted: String
-  status: String
-  quantitiy: Int
-  manufacturer: Manufacturer
   products_orderd: Int
+  image: ImageFieldOutput
+  quantitiy: Int
+  rating: Int
+  status: String
+  manufacturer: Manufacturer
   reviews(
     where: ReviewWhereInput! = {}
     search: String
@@ -354,7 +356,6 @@ type Product {
       reason: "This query will be removed in a future version. Please use reviewsCount instead."
     )
   reviewsCount(where: ReviewWhereInput! = {}): Int
-  image: ImageFieldOutput
   is_discounted: String
   discount(
     where: DiscountWhereInput! = {}
@@ -401,7 +402,6 @@ type Product {
       reason: "This query will be removed in a future version. Please use taxCount instead."
     )
   taxCount(where: TaxWhereInput! = {}): Int
-  rating: Int
   category: Category
   tags(
     where: TagWhereInput! = {}
@@ -425,8 +425,6 @@ type Product {
       reason: "This query will be removed in a future version. Please use tagsCount instead."
     )
   tagsCount(where: TagWhereInput! = {}): Int
-  product_type: ProductType
-  product_attributes: ProductAttribute
   product_sku(
     where: ProductSkuWhereInput! = {}
     search: String
@@ -449,6 +447,8 @@ type Product {
       reason: "This query will be removed in a future version. Please use product_skuCount instead."
     )
   product_skuCount(where: ProductSkuWhereInput! = {}): Int
+  product_type: ProductType
+  product_attributes: ProductAttribute
 }
 
 input ProductWhereInput {
@@ -546,20 +546,6 @@ input ProductWhereInput {
   is_deleted_not_ends_with_i: String
   is_deleted_in: [String]
   is_deleted_not_in: [String]
-  status: String
-  status_not: String
-  status_in: [String]
-  status_not_in: [String]
-  quantitiy: Int
-  quantitiy_not: Int
-  quantitiy_lt: Int
-  quantitiy_lte: Int
-  quantitiy_gt: Int
-  quantitiy_gte: Int
-  quantitiy_in: [Int]
-  quantitiy_not_in: [Int]
-  manufacturer: ManufacturerWhereInput
-  manufacturer_is_null: Boolean
   products_orderd: Int
   products_orderd_not: Int
   products_orderd_lt: Int
@@ -568,6 +554,28 @@ input ProductWhereInput {
   products_orderd_gte: Int
   products_orderd_in: [Int]
   products_orderd_not_in: [Int]
+  quantitiy: Int
+  quantitiy_not: Int
+  quantitiy_lt: Int
+  quantitiy_lte: Int
+  quantitiy_gt: Int
+  quantitiy_gte: Int
+  quantitiy_in: [Int]
+  quantitiy_not_in: [Int]
+  rating: Int
+  rating_not: Int
+  rating_lt: Int
+  rating_lte: Int
+  rating_gt: Int
+  rating_gte: Int
+  rating_in: [Int]
+  rating_not_in: [Int]
+  status: String
+  status_not: String
+  status_in: [String]
+  status_not_in: [String]
+  manufacturer: ManufacturerWhereInput
+  manufacturer_is_null: Boolean
 
   """
    condition must be true for all nodes
@@ -585,20 +593,6 @@ input ProductWhereInput {
   reviews_none: ReviewWhereInput
   is_discounted: String
   is_discounted_not: String
-  is_discounted_contains: String
-  is_discounted_not_contains: String
-  is_discounted_starts_with: String
-  is_discounted_not_starts_with: String
-  is_discounted_ends_with: String
-  is_discounted_not_ends_with: String
-  is_discounted_i: String
-  is_discounted_not_i: String
-  is_discounted_contains_i: String
-  is_discounted_not_contains_i: String
-  is_discounted_starts_with_i: String
-  is_discounted_not_starts_with_i: String
-  is_discounted_ends_with_i: String
-  is_discounted_not_ends_with_i: String
   is_discounted_in: [String]
   is_discounted_not_in: [String]
 
@@ -618,20 +612,6 @@ input ProductWhereInput {
   discount_none: DiscountWhereInput
   is_taxed: String
   is_taxed_not: String
-  is_taxed_contains: String
-  is_taxed_not_contains: String
-  is_taxed_starts_with: String
-  is_taxed_not_starts_with: String
-  is_taxed_ends_with: String
-  is_taxed_not_ends_with: String
-  is_taxed_i: String
-  is_taxed_not_i: String
-  is_taxed_contains_i: String
-  is_taxed_not_contains_i: String
-  is_taxed_starts_with_i: String
-  is_taxed_not_starts_with_i: String
-  is_taxed_ends_with_i: String
-  is_taxed_not_ends_with_i: String
   is_taxed_in: [String]
   is_taxed_not_in: [String]
 
@@ -649,14 +629,6 @@ input ProductWhereInput {
    condition must be false for all nodes
   """
   tax_none: TaxWhereInput
-  rating: Int
-  rating_not: Int
-  rating_lt: Int
-  rating_lte: Int
-  rating_gt: Int
-  rating_gte: Int
-  rating_in: [Int]
-  rating_not_in: [Int]
   category: CategoryWhereInput
   category_is_null: Boolean
 
@@ -674,10 +646,6 @@ input ProductWhereInput {
    condition must be false for all nodes
   """
   tags_none: TagWhereInput
-  product_type: ProductTypeWhereInput
-  product_type_is_null: Boolean
-  product_attributes: ProductAttributeWhereInput
-  product_attributes_is_null: Boolean
 
   """
    condition must be true for all nodes
@@ -693,6 +661,10 @@ input ProductWhereInput {
    condition must be false for all nodes
   """
   product_sku_none: ProductSkuWhereInput
+  product_type: ProductTypeWhereInput
+  product_type_is_null: Boolean
+  product_attributes: ProductAttributeWhereInput
+  product_attributes_is_null: Boolean
 }
 
 input ProductWhereUniqueInput {
@@ -716,18 +688,18 @@ enum SortProductsBy {
   deleted_at_DESC
   is_deleted_ASC
   is_deleted_DESC
-  status_ASC
-  status_DESC
-  quantitiy_ASC
-  quantitiy_DESC
   products_orderd_ASC
   products_orderd_DESC
+  quantitiy_ASC
+  quantitiy_DESC
+  rating_ASC
+  rating_DESC
+  status_ASC
+  status_DESC
   is_discounted_ASC
   is_discounted_DESC
   is_taxed_ASC
   is_taxed_DESC
-  rating_ASC
-  rating_DESC
 }
 
 input ProductOrderByInput {
@@ -739,12 +711,12 @@ input ProductOrderByInput {
   updated_at: OrderDirection
   deleted_at: OrderDirection
   is_deleted: OrderDirection
-  status: OrderDirection
-  quantitiy: OrderDirection
   products_orderd: OrderDirection
+  quantitiy: OrderDirection
+  rating: OrderDirection
+  status: OrderDirection
   is_discounted: OrderDirection
   is_taxed: OrderDirection
-  rating: OrderDirection
 }
 
 input ProductUpdateInput {
@@ -755,22 +727,22 @@ input ProductUpdateInput {
   updated_at: String
   deleted_at: String
   is_deleted: String
-  status: String
-  quantitiy: Int
-  manufacturer: ManufacturerRelateToOneInput
   products_orderd: Int
-  reviews: ReviewRelateToManyInput
   image: ImageFieldInput
+  quantitiy: Int
+  rating: Int
+  status: String
+  manufacturer: ManufacturerRelateToOneInput
+  reviews: ReviewRelateToManyInput
   is_discounted: String
   discount: DiscountRelateToManyInput
   is_taxed: String
   tax: TaxRelateToManyInput
-  rating: Int
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
+  product_sku: ProductSkuRelateToManyInput
   product_type: ProductTypeRelateToOneInput
   product_attributes: ProductAttributeRelateToOneInput
-  product_sku: ProductSkuRelateToManyInput
 }
 
 input ManufacturerRelateToOneInput {
@@ -808,6 +780,13 @@ input TagRelateToManyInput {
   disconnectAll: Boolean
 }
 
+input ProductSkuRelateToManyInput {
+  create: [ProductSkuCreateInput]
+  connect: [ProductSkuWhereUniqueInput]
+  disconnect: [ProductSkuWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
 input ProductTypeRelateToOneInput {
   create: ProductTypeCreateInput
   connect: ProductTypeWhereUniqueInput
@@ -819,13 +798,6 @@ input ProductAttributeRelateToOneInput {
   create: ProductAttributeCreateInput
   connect: ProductAttributeWhereUniqueInput
   disconnect: ProductAttributeWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input ProductSkuRelateToManyInput {
-  create: [ProductSkuCreateInput]
-  connect: [ProductSkuWhereUniqueInput]
-  disconnect: [ProductSkuWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -842,22 +814,22 @@ input ProductCreateInput {
   updated_at: String
   deleted_at: String
   is_deleted: String
-  status: String
-  quantitiy: Int
-  manufacturer: ManufacturerRelateToOneInput
   products_orderd: Int
-  reviews: ReviewRelateToManyInput
   image: ImageFieldInput
+  quantitiy: Int
+  rating: Int
+  status: String
+  manufacturer: ManufacturerRelateToOneInput
+  reviews: ReviewRelateToManyInput
   is_discounted: String
   discount: DiscountRelateToManyInput
   is_taxed: String
   tax: TaxRelateToManyInput
-  rating: Int
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
+  product_sku: ProductSkuRelateToManyInput
   product_type: ProductTypeRelateToOneInput
   product_attributes: ProductAttributeRelateToOneInput
-  product_sku: ProductSkuRelateToManyInput
 }
 
 input ProductsCreateInput {
@@ -1720,6 +1692,7 @@ type OrdersProduct {
   product_quantity: Int
   product_price: String
   products_tax: String
+  products_discount: String
   products_final_price: String
 }
 
@@ -1772,6 +1745,12 @@ input OrdersProductWhereInput {
   products_tax_lte: String
   products_tax_gt: String
   products_tax_gte: String
+  products_discount: String
+  products_discount_not: String
+  products_discount_lt: String
+  products_discount_lte: String
+  products_discount_gt: String
+  products_discount_gte: String
   products_final_price: String
   products_final_price_not: String
   products_final_price_lt: String
@@ -1795,6 +1774,8 @@ enum SortOrdersProductsBy {
   product_price_DESC
   products_tax_ASC
   products_tax_DESC
+  products_discount_ASC
+  products_discount_DESC
   products_final_price_ASC
   products_final_price_DESC
 }
@@ -1805,6 +1786,7 @@ input OrdersProductOrderByInput {
   product_quantity: OrderDirection
   product_price: OrderDirection
   products_tax: OrderDirection
+  products_discount: OrderDirection
   products_final_price: OrderDirection
 }
 
@@ -1813,6 +1795,7 @@ input OrdersProductUpdateInput {
   product_quantity: Int
   product_price: String
   products_tax: String
+  products_discount: String
   products_final_price: String
 }
 
@@ -1826,6 +1809,7 @@ input OrdersProductCreateInput {
   product_quantity: Int
   product_price: String
   products_tax: String
+  products_discount: String
   products_final_price: String
 }
 
@@ -2150,20 +2134,6 @@ input NotificationWhereInput {
   is_deleted_not_in: [String]
   is_seen: String
   is_seen_not: String
-  is_seen_contains: String
-  is_seen_not_contains: String
-  is_seen_starts_with: String
-  is_seen_not_starts_with: String
-  is_seen_ends_with: String
-  is_seen_not_ends_with: String
-  is_seen_i: String
-  is_seen_not_i: String
-  is_seen_contains_i: String
-  is_seen_not_contains_i: String
-  is_seen_starts_with_i: String
-  is_seen_not_starts_with_i: String
-  is_seen_ends_with_i: String
-  is_seen_not_ends_with_i: String
   is_seen_in: [String]
   is_seen_not_in: [String]
 }
@@ -3504,6 +3474,7 @@ type PaymentMethod {
   deleted_at: String
   is_deleted: String
   payment_method: String
+  currency: String
   customers(
     where: UserWhereInput! = {}
     search: String
@@ -3548,7 +3519,6 @@ type PaymentMethod {
       reason: "This query will be removed in a future version. Please use ordersCount instead."
     )
   ordersCount(where: OrderWhereInput! = {}): Int
-  currency: String
 }
 
 input PaymentMethodWhereInput {
@@ -3608,6 +3578,24 @@ input PaymentMethodWhereInput {
   payment_method_not: String
   payment_method_in: [String]
   payment_method_not_in: [String]
+  currency: String
+  currency_not: String
+  currency_contains: String
+  currency_not_contains: String
+  currency_starts_with: String
+  currency_not_starts_with: String
+  currency_ends_with: String
+  currency_not_ends_with: String
+  currency_i: String
+  currency_not_i: String
+  currency_contains_i: String
+  currency_not_contains_i: String
+  currency_starts_with_i: String
+  currency_not_starts_with_i: String
+  currency_ends_with_i: String
+  currency_not_ends_with_i: String
+  currency_in: [String]
+  currency_not_in: [String]
 
   """
    condition must be true for all nodes
@@ -3638,24 +3626,6 @@ input PaymentMethodWhereInput {
    condition must be false for all nodes
   """
   orders_none: OrderWhereInput
-  currency: String
-  currency_not: String
-  currency_contains: String
-  currency_not_contains: String
-  currency_starts_with: String
-  currency_not_starts_with: String
-  currency_ends_with: String
-  currency_not_ends_with: String
-  currency_i: String
-  currency_not_i: String
-  currency_contains_i: String
-  currency_not_contains_i: String
-  currency_starts_with_i: String
-  currency_not_starts_with_i: String
-  currency_ends_with_i: String
-  currency_not_ends_with_i: String
-  currency_in: [String]
-  currency_not_in: [String]
 }
 
 input PaymentMethodWhereUniqueInput {
@@ -3695,9 +3665,9 @@ input PaymentMethodUpdateInput {
   deleted_at: String
   is_deleted: String
   payment_method: String
+  currency: String
   customers: UserRelateToManyInput
   orders: OrderRelateToManyInput
-  currency: String
 }
 
 input UserRelateToManyInput {
@@ -3718,9 +3688,9 @@ input PaymentMethodCreateInput {
   deleted_at: String
   is_deleted: String
   payment_method: String
+  currency: String
   customers: UserRelateToManyInput
   orders: OrderRelateToManyInput
-  currency: String
 }
 
 input PaymentMethodsCreateInput {

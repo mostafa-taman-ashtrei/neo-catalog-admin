@@ -4063,6 +4063,7 @@ type ProductSku {
   is_deleted: String
   products: Product
   sku: String
+  price: String
   sku_attribute(
     where: ProductSkuAttributeWhereInput! = {}
     search: String
@@ -4160,6 +4161,12 @@ input ProductSkuWhereInput {
   sku_not_ends_with_i: String
   sku_in: [String]
   sku_not_in: [String]
+  price: String
+  price_not: String
+  price_lt: String
+  price_lte: String
+  price_gt: String
+  price_gte: String
 
   """
    condition must be true for all nodes
@@ -4194,6 +4201,8 @@ enum SortProductSkusBy {
   is_deleted_DESC
   sku_ASC
   sku_DESC
+  price_ASC
+  price_DESC
 }
 
 input ProductSkuOrderByInput {
@@ -4203,6 +4212,7 @@ input ProductSkuOrderByInput {
   deleted_at: OrderDirection
   is_deleted: OrderDirection
   sku: OrderDirection
+  price: OrderDirection
 }
 
 input ProductSkuUpdateInput {
@@ -4212,6 +4222,7 @@ input ProductSkuUpdateInput {
   is_deleted: String
   products: ProductRelateToOneInput
   sku: String
+  price: String
   sku_attribute: ProductSkuAttributeRelateToManyInput
 }
 
@@ -4234,6 +4245,7 @@ input ProductSkuCreateInput {
   is_deleted: String
   products: ProductRelateToOneInput
   sku: String
+  price: String
   sku_attribute: ProductSkuAttributeRelateToManyInput
 }
 

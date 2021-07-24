@@ -302,6 +302,7 @@ model ProductSku {
   products      Product?              @relation("ProductSku_products", fields: [productsId], references: [id])
   productsId    Int?                  @map("products")
   sku           String?
+  price         Decimal?              @postgresql.Decimal(18, 4)
   sku_attribute ProductSkuAttribute[] @relation("ProductSku_sku_attribute_ProductSkuAttribute_product_sku")
 
   @@index([productsId])

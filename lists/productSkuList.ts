@@ -1,4 +1,4 @@
-import { relationship, text, timestamp } from '@keystone-next/fields';
+import { decimal, relationship, text, timestamp } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
 
 const productSkuList = list({
@@ -22,6 +22,7 @@ const productSkuList = list({
             }
         }),
         sku: text({ isRequired: true }),
+        price: decimal(),
         sku_attribute: relationship({
             ref: 'ProductSkuAttribute.product_sku',
             ui: {

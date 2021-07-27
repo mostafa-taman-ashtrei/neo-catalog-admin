@@ -4,7 +4,7 @@ import { list } from '@keystone-next/keystone/schema';
 const productList = list({
     ui: {
         listView: {
-            initialColumns: ['title', 'product_sku', 'product_type', 'product_attributes', 'price', 'status', 'image', 'reviews', 'manufacturer', 'category', 'tags', 'tax', 'is_discounted', 'discount'],
+            initialColumns: ['title', 'price', 'product_sku', 'created_at']
         },
     },
 
@@ -16,6 +16,12 @@ const productList = list({
         updated_at: timestamp(),
         deleted_at: timestamp({ isRequired: false }), // the deleted_at and is_deleted fiels are used for soft deletes  
         is_deleted: text({ isRequired: true, defaultValue: 'false' }),
+
+        products_orderd: integer({ isRequired: true, defaultValue: 0 }),
+        image: image({ isRequired: true }), // The image is stored locally for now
+        quantitiy: integer({ isRequired: true }),
+        rating: integer({ isRequired: false, defaultValue: 0 }),
+
         status: select({
             options: [
                 { value: 'InStock', label: 'InStock' },
@@ -26,41 +32,114 @@ const productList = list({
             },
             defaultValue: 'InStock',
         }),
-        quantitiy: integer({ isRequired: true }),
+
         manufacturer: relationship({
             ref: 'Manufacturer.products',
             ui: {
                 displayMode: 'cards',
                 cardFields: ['name'],
-                inlineEdit: { fields: ['name'] },
                 linkToItem: true,
-                inlineCreate: { fields: ['name'] },
+                inlineConnect: true,
+                inlineCreate: { fields: ['name', 'image', 'products'] },
             },
         }),
-        products_orderd: integer({ isRequired: true, defaultValue: 0 }),
-        reviews: relationship({ ref: 'Review.product', many: true }),
-        image: image({ isRequired: true }), // The image is stored locally for now
-        is_discounted: text({ defaultValue: 'false' }),
-        discount: relationship({ ref: 'Discount.products', many: true }),
-        is_taxed: text({ defaultValue: 'false' }),
-        tax: relationship({ ref: 'Tax.products', many: true }),
-        rating: integer({ isRequired: false, defaultValue: 0 }),
-        category: relationship({ ref: 'Category.products' }),
+
+        reviews: relationship({
+            ref: 'Review.product',
+            many: true,
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['review_text'],
+                inlineConnect: true,
+                inlineCreate: { fields: ['review_text', 'product', 'customer'] },
+            }
+        }),
+
+
+        is_discounted: select({
+            options: [
+                { value: 'true', label: 'true' },
+                { value: 'false', label: 'false' },
+            ],
+            ui: {
+                displayMode: 'select',
+            },
+            defaultValue: 'false',
+        }),
+
+        discount: relationship({
+            ref: 'Discount.products',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['discount_name', 'discount_value'],
+                inlineConnect: true,
+                inlineCreate: { fields: ['discount_name', 'discount_value', 'discount_description', 'products'] },
+            },
+            many: true
+        }),
+
+        is_taxed: select({
+            options: [
+                { value: 'true', label: 'true' },
+                { value: 'false', label: 'false' },
+            ],
+            ui: {
+                displayMode: 'select',
+            },
+            defaultValue: 'false',
+        }),
+
+        tax: relationship({
+            ref: 'Tax.products',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['tax_name', 'tax_rate'],
+                inlineConnect: true,
+                inlineCreate: { fields: ['tax_name', 'tax_rate', 'tax_description', 'products'] },
+            },
+            many: true
+        }),
+
+
+
+        category: relationship({
+            ref: 'Category.products',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['name', 'num_of_products'],
+                inlineConnect: true,
+                inlineCreate: { fields: ['name', 'num_of_products', 'image', 'description', 'products'] },
+            },
+        }),
+
         tags: relationship({
             ref: 'Tag.products',
             ui: {
                 displayMode: 'cards',
                 cardFields: ['name'],
-                inlineEdit: { fields: ['name'] },
                 linkToItem: true,
                 inlineConnect: true,
-                inlineCreate: { fields: ['name'] },
+                inlineCreate: { fields: ['name', 'num_of_products', 'description', 'products'] },
             },
             many: true,
         }),
+
+        product_sku: relationship({
+            ref: 'ProductSku.products',
+            many: true,
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['sku', 'sku_attribute', 'products'],
+                createView: { fieldMode: 'edit' },
+                listView: { fieldMode: 'hidden' },
+                itemView: { fieldMode: 'edit' },
+                inlineConnect: true,
+                inlineCreate: { fields: ['sku', 'sku_attribute', 'products'] },
+            }
+        }),
+
         product_type: relationship({ ref: 'ProductType.products' }),
         product_attributes: relationship({ ref: 'ProductAttribute.product' }),
-        product_sku: relationship({ ref: 'ProductSku.products', many: true }),
     },
 });
 

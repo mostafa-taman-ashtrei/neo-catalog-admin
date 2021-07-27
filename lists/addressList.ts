@@ -12,7 +12,15 @@ const addressList = list({
         street: text(),
         city: text(),
         country: text(),
-        user: relationship({ ref: 'User.address' }),
+        user: relationship({
+            ref: 'User.address',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['name', 'email'],
+                linkToItem: true,
+                inlineConnect: true
+            },
+        }),
         created_at: timestamp({ defaultValue: Date() }),
         updated_at: timestamp(),
         deleted_at: timestamp({ isRequired: false }), // the deleted_at and is_deleted fiels is used for soft deletes  

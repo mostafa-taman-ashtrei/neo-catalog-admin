@@ -4,7 +4,7 @@ import { list } from '@keystone-next/keystone/schema';
 const discountList = list({
     ui: {
         listView: {
-            initialColumns: ['discount_value', 'products'],
+            initialColumns: ['discount_name', 'discount_value'],
         },
     },
 
@@ -16,7 +16,16 @@ const discountList = list({
         discount_name: text(),
         discount_value: decimal({ isRequired: true }),
         discount_description: text(),
-        products: relationship({ ref: 'Product.discount', many: true })
+        products: relationship({
+            ref: 'Product.discount',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['title', 'price'],
+                linkToItem: true,
+                inlineConnect: true
+            },
+            many: true
+        })
     },
 });
 

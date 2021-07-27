@@ -36,31 +36,31 @@ model Product {
   updated_at           DateTime?
   deleted_at           DateTime?
   is_deleted           String?
-  status               String?
-  quantitiy            Int?
-  manufacturer         Manufacturer?     @relation("Product_manufacturer", fields: [manufacturerId], references: [id])
-  manufacturerId       Int?              @map("manufacturer")
   products_orderd      Int?
-  reviews              Review[]          @relation("Review_product")
   image_filesize       Int?
   image_extension      String?
   image_width          Int?
   image_height         Int?
   image_mode           String?
   image_id             String?
+  quantitiy            Int?
+  rating               Int?
+  status               String?
+  manufacturer         Manufacturer?     @relation("Product_manufacturer", fields: [manufacturerId], references: [id])
+  manufacturerId       Int?              @map("manufacturer")
+  reviews              Review[]          @relation("Review_product")
   is_discounted        String?
   discount             Discount[]        @relation("Discount_products_Product_discount")
   is_taxed             String?
   tax                  Tax[]             @relation("Product_tax_Tax_products")
-  rating               Int?
   category             Category?         @relation("Product_category", fields: [categoryId], references: [id])
   categoryId           Int?              @map("category")
   tags                 Tag[]             @relation("Product_tags_Tag_products")
+  product_sku          ProductSku[]      @relation("ProductSku_products")
   product_type         ProductType?      @relation("Product_product_type", fields: [product_typeId], references: [id])
   product_typeId       Int?              @map("product_type")
   product_attributes   ProductAttribute? @relation("Product_product_attributes", fields: [product_attributesId], references: [id])
   product_attributesId Int?              @unique @map("product_attributes")
-  product_sku          ProductSku[]      @relation("ProductSku_products")
 
   @@index([manufacturerId])
   @@index([categoryId])
@@ -138,6 +138,7 @@ model OrdersProduct {
   product_quantity          Int?
   product_price             Decimal? @postgresql.Decimal(18, 4)
   products_tax              Decimal? @postgresql.Decimal(18, 4)
+  products_discount         Decimal? @postgresql.Decimal(18, 4)
   products_final_price      Decimal? @postgresql.Decimal(18, 4)
   from_Order_orders_product Order[]  @relation("Order_orders_product_many")
 }
@@ -258,9 +259,9 @@ model PaymentMethod {
   deleted_at     DateTime?
   is_deleted     String?
   payment_method String?
+  currency       String?
   customers      User[]    @relation("PaymentMethod_customers_many")
   orders         Order[]   @relation("Order_payment_method")
-  currency       String?
 }
 
 model Address {
@@ -301,6 +302,7 @@ model ProductSku {
   products      Product?              @relation("ProductSku_products", fields: [productsId], references: [id])
   productsId    Int?                  @map("products")
   sku           String?
+  price         Decimal?              @postgresql.Decimal(18, 4)
   sku_attribute ProductSkuAttribute[] @relation("ProductSku_sku_attribute_ProductSkuAttribute_product_sku")
 
   @@index([productsId])

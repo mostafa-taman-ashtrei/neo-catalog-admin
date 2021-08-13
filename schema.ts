@@ -19,6 +19,7 @@ import addressList from './lists/addressList';
 import attributeList from './lists/AttributeList';
 import productSkuList from './lists/productSkuList';
 import productAttributeSkuList from './lists/productSkuAttributeList';
+import cartItemList from './lists/cartItemList';
 
 export const lists = createSchema({
     User: userList,
@@ -41,4 +42,5 @@ export const lists = createSchema({
     Attribute: attributeList,
     ProductSku: productSkuList,
     ProductSkuAttribute: productAttributeSkuList,
+    CartItem: cartItemList,
 });

@@ -4,7 +4,7 @@ import { list } from '@keystone-next/keystone/schema';
 const userList = list({
     ui: {
         listView: {
-            initialColumns: ['name', 'profile_image', 'address', 'phone', 'notifications', 'orders', 'reviews'],
+            initialColumns: ['name', 'profile_image', 'address', 'phone', 'cart', 'notifications', 'orders', 'reviews'],
         },
     },
     fields: {
@@ -28,6 +28,16 @@ const userList = list({
                 cardFields: ['review_text'],
                 linkToItem: true,
                 inlineConnect: true,
+            },
+            many: true
+        }),
+        cart: relationship({
+            ref: 'CartItem.customer',
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['product', 'quantity'],
+                linkToItem: true,
+                inlineConnect: true
             },
             many: true
         }),

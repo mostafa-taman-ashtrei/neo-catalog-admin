@@ -30,6 +30,28 @@ type User {
       reason: "This query will be removed in a future version. Please use reviewsCount instead."
     )
   reviewsCount(where: ReviewWhereInput! = {}): Int
+  cart(
+    where: CartItemWhereInput! = {}
+    search: String
+    sortBy: [SortCartItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [CartItem!]
+  _cartMeta(
+    where: CartItemWhereInput! = {}
+    search: String
+    sortBy: [SortCartItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use cartCount instead."
+    )
+  cartCount(where: CartItemWhereInput! = {}): Int
   orders(
     where: OrderWhereInput! = {}
     search: String
@@ -189,6 +211,21 @@ input UserWhereInput {
   """
    condition must be true for all nodes
   """
+  cart_every: CartItemWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  cart_some: CartItemWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  cart_none: CartItemWhereInput
+
+  """
+   condition must be true for all nodes
+  """
   orders_every: OrderWhereInput
 
   """
@@ -252,6 +289,7 @@ input UserUpdateInput {
   address: AddressRelateToOneInput
   phone: String
   reviews: ReviewRelateToManyInput
+  cart: CartItemRelateToManyInput
   orders: OrderRelateToManyInput
   profile_image: ImageFieldInput
   notifications: NotificationRelateToManyInput
@@ -268,6 +306,13 @@ input ReviewRelateToManyInput {
   create: [ReviewCreateInput]
   connect: [ReviewWhereUniqueInput]
   disconnect: [ReviewWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input CartItemRelateToManyInput {
+  create: [CartItemCreateInput]
+  connect: [CartItemWhereUniqueInput]
+  disconnect: [CartItemWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -307,6 +352,7 @@ input UserCreateInput {
   address: AddressRelateToOneInput
   phone: String
   reviews: ReviewRelateToManyInput
+  cart: CartItemRelateToManyInput
   orders: OrderRelateToManyInput
   profile_image: ImageFieldInput
   notifications: NotificationRelateToManyInput
@@ -4455,6 +4501,144 @@ input ProductSkuAttributesCreateInput {
 }
 
 """
+ A keystone list
+"""
+type CartItem {
+  id: ID!
+  customer: User
+  product: Product
+  quantity: Int
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+}
+
+input CartItemWhereInput {
+  AND: [CartItemWhereInput!]
+  OR: [CartItemWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  customer: UserWhereInput
+  customer_is_null: Boolean
+  product: ProductWhereInput
+  product_is_null: Boolean
+  quantity: Int
+  quantity_not: Int
+  quantity_lt: Int
+  quantity_lte: Int
+  quantity_gt: Int
+  quantity_gte: Int
+  quantity_in: [Int]
+  quantity_not_in: [Int]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+}
+
+input CartItemWhereUniqueInput {
+  id: ID
+}
+
+enum SortCartItemsBy {
+  id_ASC
+  id_DESC
+  quantity_ASC
+  quantity_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+}
+
+input CartItemOrderByInput {
+  id: OrderDirection
+  quantity: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+}
+
+input CartItemUpdateInput {
+  customer: UserRelateToOneInput
+  product: ProductRelateToOneInput
+  quantity: Int
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+}
+
+input CartItemsUpdateInput {
+  id: ID!
+  data: CartItemUpdateInput
+}
+
+input CartItemCreateInput {
+  customer: UserRelateToOneInput
+  product: ProductRelateToOneInput
+  quantity: Int
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+}
+
+input CartItemsCreateInput {
+  data: CartItemCreateInput
+}
+
+"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -5087,6 +5271,36 @@ type Mutation {
    Delete multiple ProductSkuAttribute items by ID.
   """
   deleteProductSkuAttributes(ids: [ID!]): [ProductSkuAttribute]
+
+  """
+   Create a single CartItem item.
+  """
+  createCartItem(data: CartItemCreateInput): CartItem
+
+  """
+   Create multiple CartItem items.
+  """
+  createCartItems(data: [CartItemsCreateInput]): [CartItem]
+
+  """
+   Update a single CartItem item by ID.
+  """
+  updateCartItem(id: ID!, data: CartItemUpdateInput): CartItem
+
+  """
+   Update multiple CartItem items by ID.
+  """
+  updateCartItems(data: [CartItemsUpdateInput]): [CartItem]
+
+  """
+   Delete a single CartItem item by ID.
+  """
+  deleteCartItem(id: ID!): CartItem
+
+  """
+   Delete multiple CartItem items by ID.
+  """
+  deleteCartItems(ids: [ID!]): [CartItem]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -5831,6 +6045,41 @@ type Query {
       reason: "This query will be removed in a future version. Please use productSkuAttributesCount instead."
     )
   productSkuAttributesCount(where: ProductSkuAttributeWhereInput! = {}): Int
+
+  """
+   Search for all CartItem items which match the where clause.
+  """
+  allCartItems(
+    where: CartItemWhereInput! = {}
+    search: String
+    sortBy: [SortCartItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [CartItem!]
+
+  """
+   Search for the CartItem item with the matching ID.
+  """
+  CartItem(where: CartItemWhereUniqueInput!): CartItem
+
+  """
+   Perform a meta-query on all CartItem items which match the where clause.
+  """
+  _allCartItemsMeta(
+    where: CartItemWhereInput! = {}
+    search: String
+    sortBy: [SortCartItemsBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [CartItemOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use cartItemsCount instead."
+    )
+  cartItemsCount(where: CartItemWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

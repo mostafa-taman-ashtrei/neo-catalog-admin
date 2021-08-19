@@ -137,9 +137,6 @@ const productList = list({
                 inlineCreate: { fields: ['sku', 'sku_attribute', 'products'] },
             }
         }),
-
-        product_type: relationship({ ref: 'ProductType.products' }),
-        product_attributes: relationship({ ref: 'ProductAttribute.product' }),
     },
 });
 

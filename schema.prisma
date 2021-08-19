@@ -28,43 +28,38 @@ model User {
 }
 
 model Product {
-  id                   Int               @id @default(autoincrement())
-  title                String?
-  description          String?
-  price                Decimal?          @postgresql.Decimal(18, 4)
-  created_at           DateTime?
-  updated_at           DateTime?
-  deleted_at           DateTime?
-  is_deleted           String?
-  products_orderd      Int?
-  image_filesize       Int?
-  image_extension      String?
-  image_width          Int?
-  image_height         Int?
-  image_mode           String?
-  image_id             String?
-  quantitiy            Int?
-  rating               Int?
-  status               String?
-  manufacturer         Manufacturer?     @relation("Product_manufacturer", fields: [manufacturerId], references: [id])
-  manufacturerId       Int?              @map("manufacturer")
-  reviews              Review[]          @relation("Review_product")
-  is_discounted        String?
-  discount             Discount[]        @relation("Discount_products_Product_discount")
-  is_taxed             String?
-  tax                  Tax[]             @relation("Product_tax_Tax_products")
-  category             Category?         @relation("Product_category", fields: [categoryId], references: [id])
-  categoryId           Int?              @map("category")
-  tags                 Tag[]             @relation("Product_tags_Tag_products")
-  product_sku          ProductSku[]      @relation("ProductSku_products")
-  product_type         ProductType?      @relation("Product_product_type", fields: [product_typeId], references: [id])
-  product_typeId       Int?              @map("product_type")
-  product_attributes   ProductAttribute? @relation("Product_product_attributes", fields: [product_attributesId], references: [id])
-  product_attributesId Int?              @unique @map("product_attributes")
+  id              Int           @id @default(autoincrement())
+  title           String?
+  description     String?
+  price           Decimal?      @postgresql.Decimal(18, 4)
+  created_at      DateTime?
+  updated_at      DateTime?
+  deleted_at      DateTime?
+  is_deleted      String?
+  products_orderd Int?
+  image_filesize  Int?
+  image_extension String?
+  image_width     Int?
+  image_height    Int?
+  image_mode      String?
+  image_id        String?
+  quantitiy       Int?
+  rating          Int?
+  status          String?
+  manufacturer    Manufacturer? @relation("Product_manufacturer", fields: [manufacturerId], references: [id])
+  manufacturerId  Int?          @map("manufacturer")
+  reviews         Review[]      @relation("Review_product")
+  is_discounted   String?
+  discount        Discount[]    @relation("Discount_products_Product_discount")
+  is_taxed        String?
+  tax             Tax[]         @relation("Product_tax_Tax_products")
+  category        Category?     @relation("Product_category", fields: [categoryId], references: [id])
+  categoryId      Int?          @map("category")
+  tags            Tag[]         @relation("Product_tags_Tag_products")
+  product_sku     ProductSku[]  @relation("ProductSku_products")
 
   @@index([manufacturerId])
   @@index([categoryId])
-  @@index([product_typeId])
 }
 
 model Tag {
@@ -199,59 +194,6 @@ model Discount {
   products             Product[] @relation("Discount_products_Product_discount")
 }
 
-model ProductType {
-  id                                     Int                    @id @default(autoincrement())
-  created_at                             DateTime?
-  updated_at                             DateTime?
-  deleted_at                             DateTime?
-  is_deleted                             String?
-  product_type_name                      String?
-  product_type_attributes                ProductTypeAttribute[] @relation("ProductType_product_type_attributes_many")
-  products                               Product[]              @relation("Product_product_type")
-  from_ProductTypeAttribute_product_type ProductTypeAttribute[] @relation("ProductTypeAttribute_product_type_many")
-}
-
-model ProductAttribute {
-  id         Int       @id @default(autoincrement())
-  created_at DateTime?
-  updated_at DateTime?
-  deleted_at DateTime?
-  is_deleted String?
-  size       String?
-  material   String?
-  color      String?
-  dimensions String?
-  weight     Decimal?  @postgresql.Decimal(18, 4)
-  packaging  String?
-  design     String?
-  product    Product?  @relation("Product_product_attributes")
-}
-
-model AttributeType {
-  id                            Int         @id @default(autoincrement())
-  created_at                    DateTime?
-  updated_at                    DateTime?
-  deleted_at                    DateTime?
-  is_deleted                    String?
-  attribute                     Attribute[] @relation("AttributeType_attribute_many")
-  attribute_type                String?
-  from_Attribute_attribute_type Attribute[] @relation("Attribute_attribute_type")
-}
-
-model ProductTypeAttribute {
-  id                                       Int           @id @default(autoincrement())
-  created_at                               DateTime?
-  updated_at                               DateTime?
-  deleted_at                               DateTime?
-  is_deleted                               String?
-  product_type                             ProductType[] @relation("ProductTypeAttribute_product_type_many")
-  attribute                                Attribute?    @relation("ProductTypeAttribute_attribute", fields: [attributeId], references: [id])
-  attributeId                              Int?          @map("attribute")
-  from_ProductType_product_type_attributes ProductType[] @relation("ProductType_product_type_attributes_many")
-
-  @@index([attributeId])
-}
-
 model PaymentMethod {
   id             Int       @id @default(autoincrement())
   created_at     DateTime?
@@ -276,21 +218,6 @@ model Address {
   updated_at  DateTime?
   deleted_at  DateTime?
   is_deleted  String?
-}
-
-model Attribute {
-  id                                  Int                    @id @default(autoincrement())
-  created_at                          DateTime?
-  updated_at                          DateTime?
-  deleted_at                          DateTime?
-  is_deleted                          String?
-  attribute_type                      AttributeType?         @relation("Attribute_attribute_type", fields: [attribute_typeId], references: [id])
-  attribute_typeId                    Int?                   @map("attribute_type")
-  attribute                           String?
-  from_AttributeType_attribute        AttributeType[]        @relation("AttributeType_attribute_many")
-  from_ProductTypeAttribute_attribute ProductTypeAttribute[] @relation("ProductTypeAttribute_attribute")
-
-  @@index([attribute_typeId])
 }
 
 model ProductSku {

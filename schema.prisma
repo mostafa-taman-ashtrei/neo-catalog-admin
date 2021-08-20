@@ -28,35 +28,31 @@ model User {
 }
 
 model Product {
-  id              Int           @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
   title           String?
   description     String?
-  price           Decimal?      @postgresql.Decimal(18, 4)
+  price           Decimal?       @postgresql.Decimal(18, 4)
   created_at      DateTime?
   updated_at      DateTime?
   deleted_at      DateTime?
   is_deleted      String?
   products_orderd Int?
-  image_filesize  Int?
-  image_extension String?
-  image_width     Int?
-  image_height    Int?
-  image_mode      String?
-  image_id        String?
   quantitiy       Int?
   rating          Int?
   status          String?
-  manufacturer    Manufacturer? @relation("Product_manufacturer", fields: [manufacturerId], references: [id])
-  manufacturerId  Int?          @map("manufacturer")
-  reviews         Review[]      @relation("Review_product")
+  manufacturer    Manufacturer?  @relation("Product_manufacturer", fields: [manufacturerId], references: [id])
+  manufacturerId  Int?           @map("manufacturer")
+  reviews         Review[]       @relation("Review_product")
   is_discounted   String?
-  discount        Discount[]    @relation("Discount_products_Product_discount")
+  discount        Discount[]     @relation("Discount_products_Product_discount")
   is_taxed        String?
-  tax             Tax[]         @relation("Product_tax_Tax_products")
-  category        Category?     @relation("Product_category", fields: [categoryId], references: [id])
-  categoryId      Int?          @map("category")
-  tags            Tag[]         @relation("Product_tags_Tag_products")
-  product_sku     ProductSku[]  @relation("ProductSku_products")
+  tax             Tax[]          @relation("Product_tax_Tax_products")
+  category        Category?      @relation("Product_category", fields: [categoryId], references: [id])
+  categoryId      Int?           @map("category")
+  tags            Tag[]          @relation("Product_tags_Tag_products")
+  product_sku     ProductSku[]   @relation("ProductSku_products")
+  product_image   ProductImage[] @relation("ProductImage_product")
+  product_video   ProductVideo[] @relation("ProductVideo_product")
 
   @@index([manufacturerId])
   @@index([categoryId])
@@ -244,4 +240,40 @@ model ProductSkuAttribute {
   product_sku ProductSku[] @relation("ProductSku_sku_attribute_ProductSkuAttribute_product_sku")
   name        String?
   value       String?
+}
+
+model ProductImage {
+  id              Int       @id @default(autoincrement())
+  created_at      DateTime?
+  updated_at      DateTime?
+  deleted_at      DateTime?
+  is_deleted      String?
+  image_filesize  Int?
+  image_extension String?
+  image_width     Int?
+  image_height    Int?
+  image_mode      String?
+  image_id        String?
+  alt_text        String?
+  image_type      String?
+  product         Product?  @relation("ProductImage_product", fields: [productId], references: [id])
+  productId       Int?      @map("product")
+
+  @@index([productId])
+}
+
+model ProductVideo {
+  id             Int       @id @default(autoincrement())
+  created_at     DateTime?
+  updated_at     DateTime?
+  deleted_at     DateTime?
+  is_deleted     String?
+  video_filesize Int?
+  video_mode     String?
+  video_filename String?
+  video_type     String?
+  product        Product?  @relation("ProductVideo_product", fields: [productId], references: [id])
+  productId      Int?      @map("product")
+
+  @@index([productId])
 }

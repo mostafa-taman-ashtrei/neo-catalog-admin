@@ -1,10 +1,10 @@
-import { select, text, timestamp, integer, decimal, image, relationship } from '@keystone-next/fields';
+import { select, text, timestamp, integer, decimal, relationship } from '@keystone-next/fields';
 import { list } from '@keystone-next/keystone/schema';
 
 const productList = list({
     ui: {
         listView: {
-            initialColumns: ['title', 'price', 'product_sku', 'created_at']
+            initialColumns: ['title', 'product_image', 'product_video', 'price', 'product_sku', 'created_at']
         },
     },
 
@@ -18,7 +18,6 @@ const productList = list({
         is_deleted: text({ isRequired: true, defaultValue: 'false' }),
 
         products_orderd: integer({ isRequired: true, defaultValue: 0 }),
-        image: image({ isRequired: true }), // The image is stored locally for now
         quantitiy: integer({ isRequired: true }),
         rating: integer({ isRequired: false, defaultValue: 0 }),
 
@@ -54,7 +53,6 @@ const productList = list({
                 inlineCreate: { fields: ['review_text', 'product', 'customer'] },
             }
         }),
-
 
         is_discounted: select({
             options: [
@@ -100,8 +98,6 @@ const productList = list({
             many: true
         }),
 
-
-
         category: relationship({
             ref: 'Category.products',
             ui: {
@@ -135,6 +131,32 @@ const productList = list({
                 itemView: { fieldMode: 'edit' },
                 inlineConnect: true,
                 inlineCreate: { fields: ['sku', 'sku_attribute', 'products'] },
+            }
+        }),
+
+        product_image: relationship({
+            ref: 'ProductImage.product',
+            many: true,
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['image', 'image_type'],
+                createView: { fieldMode: 'edit' },
+                listView: { fieldMode: 'hidden' },
+                itemView: { fieldMode: 'edit' },
+                inlineConnect: true,
+            }
+        }),
+
+        product_video: relationship({
+            ref: 'ProductVideo.product',
+            many: true,
+            ui: {
+                displayMode: 'cards',
+                cardFields: ['video', 'video_type'],
+                createView: { fieldMode: 'edit' },
+                listView: { fieldMode: 'hidden' },
+                itemView: { fieldMode: 'edit' },
+                inlineConnect: true,
             }
         }),
     },

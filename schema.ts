@@ -14,6 +14,8 @@ import paymentMethodList from './lists/paymentList';
 import addressList from './lists/addressList';
 import productSkuList from './lists/productSkuList';
 import productAttributeSkuList from './lists/productSkuAttributeList';
+import productImage from './lists/productImageList';
+import productVideo from './lists/productVideoList';
 
 export const lists = createSchema({
     User: userList,
@@ -31,4 +33,6 @@ export const lists = createSchema({
     Address: addressList,
     ProductSku: productSkuList,
     ProductSkuAttribute: productAttributeSkuList,
+    ProductImage: productImage,
+    ProductVideo: productVideo,
 });

@@ -329,7 +329,6 @@ type Product {
   deleted_at: String
   is_deleted: String
   products_orderd: Int
-  image: ImageFieldOutput
   quantitiy: Int
   rating: Int
   status: String
@@ -447,6 +446,50 @@ type Product {
       reason: "This query will be removed in a future version. Please use product_skuCount instead."
     )
   product_skuCount(where: ProductSkuWhereInput! = {}): Int
+  product_image(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductImage!]
+  _product_imageMeta(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use product_imageCount instead."
+    )
+  product_imageCount(where: ProductImageWhereInput! = {}): Int
+  product_video(
+    where: ProductVideoWhereInput! = {}
+    search: String
+    sortBy: [SortProductVideosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductVideoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductVideo!]
+  _product_videoMeta(
+    where: ProductVideoWhereInput! = {}
+    search: String
+    sortBy: [SortProductVideosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductVideoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use product_videoCount instead."
+    )
+  product_videoCount(where: ProductVideoWhereInput! = {}): Int
 }
 
 input ProductWhereInput {
@@ -659,6 +702,36 @@ input ProductWhereInput {
    condition must be false for all nodes
   """
   product_sku_none: ProductSkuWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  product_image_every: ProductImageWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  product_image_some: ProductImageWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  product_image_none: ProductImageWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  product_video_every: ProductVideoWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  product_video_some: ProductVideoWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  product_video_none: ProductVideoWhereInput
 }
 
 input ProductWhereUniqueInput {
@@ -722,7 +795,6 @@ input ProductUpdateInput {
   deleted_at: String
   is_deleted: String
   products_orderd: Int
-  image: ImageFieldInput
   quantitiy: Int
   rating: Int
   status: String
@@ -735,6 +807,8 @@ input ProductUpdateInput {
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
   product_sku: ProductSkuRelateToManyInput
+  product_image: ProductImageRelateToManyInput
+  product_video: ProductVideoRelateToManyInput
 }
 
 input ManufacturerRelateToOneInput {
@@ -779,6 +853,20 @@ input ProductSkuRelateToManyInput {
   disconnectAll: Boolean
 }
 
+input ProductImageRelateToManyInput {
+  create: [ProductImageCreateInput]
+  connect: [ProductImageWhereUniqueInput]
+  disconnect: [ProductImageWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
+input ProductVideoRelateToManyInput {
+  create: [ProductVideoCreateInput]
+  connect: [ProductVideoWhereUniqueInput]
+  disconnect: [ProductVideoWhereUniqueInput]
+  disconnectAll: Boolean
+}
+
 input ProductsUpdateInput {
   id: ID!
   data: ProductUpdateInput
@@ -793,7 +881,6 @@ input ProductCreateInput {
   deleted_at: String
   is_deleted: String
   products_orderd: Int
-  image: ImageFieldInput
   quantitiy: Int
   rating: Int
   status: String
@@ -806,6 +893,8 @@ input ProductCreateInput {
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
   product_sku: ProductSkuRelateToManyInput
+  product_image: ProductImageRelateToManyInput
+  product_video: ProductVideoRelateToManyInput
 }
 
 input ProductsCreateInput {
@@ -1828,16 +1917,6 @@ type Category {
       reason: "This query will be removed in a future version. Please use productsCount instead."
     )
   productsCount(where: ProductWhereInput! = {}): Int
-}
-
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
 }
 
 input CategoryWhereInput {
@@ -3441,6 +3520,351 @@ input ProductSkuAttributesCreateInput {
 }
 
 """
+ A keystone list
+"""
+type ProductImage {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  image: ImageFieldOutput
+  alt_text: String
+  image_type: String
+  product: Product
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+input ProductImageWhereInput {
+  AND: [ProductImageWhereInput!]
+  OR: [ProductImageWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  alt_text: String
+  alt_text_not: String
+  alt_text_contains: String
+  alt_text_not_contains: String
+  alt_text_starts_with: String
+  alt_text_not_starts_with: String
+  alt_text_ends_with: String
+  alt_text_not_ends_with: String
+  alt_text_i: String
+  alt_text_not_i: String
+  alt_text_contains_i: String
+  alt_text_not_contains_i: String
+  alt_text_starts_with_i: String
+  alt_text_not_starts_with_i: String
+  alt_text_ends_with_i: String
+  alt_text_not_ends_with_i: String
+  alt_text_in: [String]
+  alt_text_not_in: [String]
+  image_type: String
+  image_type_not: String
+  image_type_contains: String
+  image_type_not_contains: String
+  image_type_starts_with: String
+  image_type_not_starts_with: String
+  image_type_ends_with: String
+  image_type_not_ends_with: String
+  image_type_i: String
+  image_type_not_i: String
+  image_type_contains_i: String
+  image_type_not_contains_i: String
+  image_type_starts_with_i: String
+  image_type_not_starts_with_i: String
+  image_type_ends_with_i: String
+  image_type_not_ends_with_i: String
+  image_type_in: [String]
+  image_type_not_in: [String]
+  product: ProductWhereInput
+  product_is_null: Boolean
+}
+
+input ProductImageWhereUniqueInput {
+  id: ID
+}
+
+enum SortProductImagesBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  alt_text_ASC
+  alt_text_DESC
+  image_type_ASC
+  image_type_DESC
+}
+
+input ProductImageOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  alt_text: OrderDirection
+  image_type: OrderDirection
+}
+
+input ProductImageUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  image: ImageFieldInput
+  alt_text: String
+  image_type: String
+  product: ProductRelateToOneInput
+}
+
+input ProductImagesUpdateInput {
+  id: ID!
+  data: ProductImageUpdateInput
+}
+
+input ProductImageCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  image: ImageFieldInput
+  alt_text: String
+  image_type: String
+  product: ProductRelateToOneInput
+}
+
+input ProductImagesCreateInput {
+  data: ProductImageCreateInput
+}
+
+"""
+ A keystone list
+"""
+type ProductVideo {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  video: FileFieldOutput
+  video_type: String
+  product: Product
+}
+
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+input ProductVideoWhereInput {
+  AND: [ProductVideoWhereInput!]
+  OR: [ProductVideoWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  video_type: String
+  video_type_not: String
+  video_type_contains: String
+  video_type_not_contains: String
+  video_type_starts_with: String
+  video_type_not_starts_with: String
+  video_type_ends_with: String
+  video_type_not_ends_with: String
+  video_type_i: String
+  video_type_not_i: String
+  video_type_contains_i: String
+  video_type_not_contains_i: String
+  video_type_starts_with_i: String
+  video_type_not_starts_with_i: String
+  video_type_ends_with_i: String
+  video_type_not_ends_with_i: String
+  video_type_in: [String]
+  video_type_not_in: [String]
+  product: ProductWhereInput
+  product_is_null: Boolean
+}
+
+input ProductVideoWhereUniqueInput {
+  id: ID
+}
+
+enum SortProductVideosBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  video_type_ASC
+  video_type_DESC
+}
+
+input ProductVideoOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  video_type: OrderDirection
+}
+
+input ProductVideoUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  video: FileFieldInput
+  video_type: String
+  product: ProductRelateToOneInput
+}
+
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
+input ProductVideosUpdateInput {
+  id: ID!
+  data: ProductVideoUpdateInput
+}
+
+input ProductVideoCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  video: FileFieldInput
+  video_type: String
+  product: ProductRelateToOneInput
+}
+
+input ProductVideosCreateInput {
+  data: ProductVideoCreateInput
+}
+
+"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -3907,6 +4331,66 @@ type Mutation {
    Delete multiple ProductSkuAttribute items by ID.
   """
   deleteProductSkuAttributes(ids: [ID!]): [ProductSkuAttribute]
+
+  """
+   Create a single ProductImage item.
+  """
+  createProductImage(data: ProductImageCreateInput): ProductImage
+
+  """
+   Create multiple ProductImage items.
+  """
+  createProductImages(data: [ProductImagesCreateInput]): [ProductImage]
+
+  """
+   Update a single ProductImage item by ID.
+  """
+  updateProductImage(id: ID!, data: ProductImageUpdateInput): ProductImage
+
+  """
+   Update multiple ProductImage items by ID.
+  """
+  updateProductImages(data: [ProductImagesUpdateInput]): [ProductImage]
+
+  """
+   Delete a single ProductImage item by ID.
+  """
+  deleteProductImage(id: ID!): ProductImage
+
+  """
+   Delete multiple ProductImage items by ID.
+  """
+  deleteProductImages(ids: [ID!]): [ProductImage]
+
+  """
+   Create a single ProductVideo item.
+  """
+  createProductVideo(data: ProductVideoCreateInput): ProductVideo
+
+  """
+   Create multiple ProductVideo items.
+  """
+  createProductVideos(data: [ProductVideosCreateInput]): [ProductVideo]
+
+  """
+   Update a single ProductVideo item by ID.
+  """
+  updateProductVideo(id: ID!, data: ProductVideoUpdateInput): ProductVideo
+
+  """
+   Update multiple ProductVideo items by ID.
+  """
+  updateProductVideos(data: [ProductVideosUpdateInput]): [ProductVideo]
+
+  """
+   Delete a single ProductVideo item by ID.
+  """
+  deleteProductVideo(id: ID!): ProductVideo
+
+  """
+   Delete multiple ProductVideo items by ID.
+  """
+  deleteProductVideos(ids: [ID!]): [ProductVideo]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -4474,6 +4958,76 @@ type Query {
       reason: "This query will be removed in a future version. Please use productSkuAttributesCount instead."
     )
   productSkuAttributesCount(where: ProductSkuAttributeWhereInput! = {}): Int
+
+  """
+   Search for all ProductImage items which match the where clause.
+  """
+  allProductImages(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductImage!]
+
+  """
+   Search for the ProductImage item with the matching ID.
+  """
+  ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
+
+  """
+   Perform a meta-query on all ProductImage items which match the where clause.
+  """
+  _allProductImagesMeta(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productImagesCount instead."
+    )
+  productImagesCount(where: ProductImageWhereInput! = {}): Int
+
+  """
+   Search for all ProductVideo items which match the where clause.
+  """
+  allProductVideos(
+    where: ProductVideoWhereInput! = {}
+    search: String
+    sortBy: [SortProductVideosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductVideoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductVideo!]
+
+  """
+   Search for the ProductVideo item with the matching ID.
+  """
+  ProductVideo(where: ProductVideoWhereUniqueInput!): ProductVideo
+
+  """
+   Perform a meta-query on all ProductVideo items which match the where clause.
+  """
+  _allProductVideosMeta(
+    where: ProductVideoWhereInput! = {}
+    search: String
+    sortBy: [SortProductVideosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductVideoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productVideosCount instead."
+    )
+  productVideosCount(where: ProductVideoWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }

@@ -18,9 +18,10 @@ const { withAuth } = createAuth({
     },
 });
 
-// create imaegs folder for uploads
+// create folders for file upload
 makeDir(`${__dirname}/public`);
 makeDir(`${__dirname}/public/images`);
+makeDir(`${__dirname}/public/files`);
 
 export default withAuth(
     config({
@@ -37,6 +38,13 @@ export default withAuth(
             local: {
                 storagePath: 'public/images',
                 baseUrl: '/images',
+            },
+        },
+        files: {
+            upload: 'local',
+            local: {
+                storagePath: 'public/files',
+                baseUrl: '/files',
             },
         },
         lists,

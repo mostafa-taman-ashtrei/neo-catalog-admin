@@ -329,7 +329,6 @@ type Product {
   deleted_at: String
   is_deleted: String
   products_orderd: Int
-  image: ImageFieldOutput
   quantitiy: Int
   rating: Int
   status: String
@@ -447,8 +446,50 @@ type Product {
       reason: "This query will be removed in a future version. Please use product_skuCount instead."
     )
   product_skuCount(where: ProductSkuWhereInput! = {}): Int
-  product_type: ProductType
-  product_attributes: ProductAttribute
+  product_image(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductImage!]
+  _product_imageMeta(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use product_imageCount instead."
+    )
+  product_imageCount(where: ProductImageWhereInput! = {}): Int
+  product_video(
+    where: ProductVideoWhereInput! = {}
+    search: String
+    sortBy: [SortProductVideosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductVideoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductVideo!]
+  _product_videoMeta(
+    where: ProductVideoWhereInput! = {}
+    search: String
+    sortBy: [SortProductVideosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductVideoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use product_videoCount instead."
+    )
+  product_videoCount(where: ProductVideoWhereInput! = {}): Int
 }
 
 input ProductWhereInput {
@@ -661,10 +702,36 @@ input ProductWhereInput {
    condition must be false for all nodes
   """
   product_sku_none: ProductSkuWhereInput
-  product_type: ProductTypeWhereInput
-  product_type_is_null: Boolean
-  product_attributes: ProductAttributeWhereInput
-  product_attributes_is_null: Boolean
+
+  """
+   condition must be true for all nodes
+  """
+  product_image_every: ProductImageWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  product_image_some: ProductImageWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  product_image_none: ProductImageWhereInput
+
+  """
+   condition must be true for all nodes
+  """
+  product_video_every: ProductVideoWhereInput
+
+  """
+   condition must be true for at least 1 node
+  """
+  product_video_some: ProductVideoWhereInput
+
+  """
+   condition must be false for all nodes
+  """
+  product_video_none: ProductVideoWhereInput
 }
 
 input ProductWhereUniqueInput {
@@ -728,7 +795,6 @@ input ProductUpdateInput {
   deleted_at: String
   is_deleted: String
   products_orderd: Int
-  image: ImageFieldInput
   quantitiy: Int
   rating: Int
   status: String
@@ -741,8 +807,8 @@ input ProductUpdateInput {
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
   product_sku: ProductSkuRelateToManyInput
-  product_type: ProductTypeRelateToOneInput
-  product_attributes: ProductAttributeRelateToOneInput
+  product_image: ProductImageRelateToManyInput
+  product_video: ProductVideoRelateToManyInput
 }
 
 input ManufacturerRelateToOneInput {
@@ -787,17 +853,17 @@ input ProductSkuRelateToManyInput {
   disconnectAll: Boolean
 }
 
-input ProductTypeRelateToOneInput {
-  create: ProductTypeCreateInput
-  connect: ProductTypeWhereUniqueInput
-  disconnect: ProductTypeWhereUniqueInput
+input ProductImageRelateToManyInput {
+  create: [ProductImageCreateInput]
+  connect: [ProductImageWhereUniqueInput]
+  disconnect: [ProductImageWhereUniqueInput]
   disconnectAll: Boolean
 }
 
-input ProductAttributeRelateToOneInput {
-  create: ProductAttributeCreateInput
-  connect: ProductAttributeWhereUniqueInput
-  disconnect: ProductAttributeWhereUniqueInput
+input ProductVideoRelateToManyInput {
+  create: [ProductVideoCreateInput]
+  connect: [ProductVideoWhereUniqueInput]
+  disconnect: [ProductVideoWhereUniqueInput]
   disconnectAll: Boolean
 }
 
@@ -815,7 +881,6 @@ input ProductCreateInput {
   deleted_at: String
   is_deleted: String
   products_orderd: Int
-  image: ImageFieldInput
   quantitiy: Int
   rating: Int
   status: String
@@ -828,8 +893,8 @@ input ProductCreateInput {
   category: CategoryRelateToOneInput
   tags: TagRelateToManyInput
   product_sku: ProductSkuRelateToManyInput
-  product_type: ProductTypeRelateToOneInput
-  product_attributes: ProductAttributeRelateToOneInput
+  product_image: ProductImageRelateToManyInput
+  product_video: ProductVideoRelateToManyInput
 }
 
 input ProductsCreateInput {
@@ -1854,16 +1919,6 @@ type Category {
   productsCount(where: ProductWhereInput! = {}): Int
 }
 
-type LocalImageFieldOutput implements ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  ref: String!
-  src: String!
-}
-
 input CategoryWhereInput {
   AND: [CategoryWhereInput!]
   OR: [CategoryWhereInput!]
@@ -2627,846 +2682,6 @@ input DiscountsCreateInput {
 """
  A keystone list
 """
-type ProductType {
-  id: ID!
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  product_type_name: String
-  product_type_attributes(
-    where: ProductTypeAttributeWhereInput! = {}
-    search: String
-    sortBy: [SortProductTypeAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductTypeAttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [ProductTypeAttribute!]
-  _product_type_attributesMeta(
-    where: ProductTypeAttributeWhereInput! = {}
-    search: String
-    sortBy: [SortProductTypeAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductTypeAttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use product_type_attributesCount instead."
-    )
-  product_type_attributesCount(where: ProductTypeAttributeWhereInput! = {}): Int
-  products(
-    where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Product!]
-  _productsMeta(
-    where: ProductWhereInput! = {}
-    search: String
-    sortBy: [SortProductsBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productsCount instead."
-    )
-  productsCount(where: ProductWhereInput! = {}): Int
-}
-
-input ProductTypeWhereInput {
-  AND: [ProductTypeWhereInput!]
-  OR: [ProductTypeWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  created_at: String
-  created_at_not: String
-  created_at_lt: String
-  created_at_lte: String
-  created_at_gt: String
-  created_at_gte: String
-  created_at_in: [String]
-  created_at_not_in: [String]
-  updated_at: String
-  updated_at_not: String
-  updated_at_lt: String
-  updated_at_lte: String
-  updated_at_gt: String
-  updated_at_gte: String
-  updated_at_in: [String]
-  updated_at_not_in: [String]
-  deleted_at: String
-  deleted_at_not: String
-  deleted_at_lt: String
-  deleted_at_lte: String
-  deleted_at_gt: String
-  deleted_at_gte: String
-  deleted_at_in: [String]
-  deleted_at_not_in: [String]
-  is_deleted: String
-  is_deleted_not: String
-  is_deleted_contains: String
-  is_deleted_not_contains: String
-  is_deleted_starts_with: String
-  is_deleted_not_starts_with: String
-  is_deleted_ends_with: String
-  is_deleted_not_ends_with: String
-  is_deleted_i: String
-  is_deleted_not_i: String
-  is_deleted_contains_i: String
-  is_deleted_not_contains_i: String
-  is_deleted_starts_with_i: String
-  is_deleted_not_starts_with_i: String
-  is_deleted_ends_with_i: String
-  is_deleted_not_ends_with_i: String
-  is_deleted_in: [String]
-  is_deleted_not_in: [String]
-  product_type_name: String
-  product_type_name_not: String
-  product_type_name_contains: String
-  product_type_name_not_contains: String
-  product_type_name_starts_with: String
-  product_type_name_not_starts_with: String
-  product_type_name_ends_with: String
-  product_type_name_not_ends_with: String
-  product_type_name_i: String
-  product_type_name_not_i: String
-  product_type_name_contains_i: String
-  product_type_name_not_contains_i: String
-  product_type_name_starts_with_i: String
-  product_type_name_not_starts_with_i: String
-  product_type_name_ends_with_i: String
-  product_type_name_not_ends_with_i: String
-  product_type_name_in: [String]
-  product_type_name_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
-  product_type_attributes_every: ProductTypeAttributeWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  product_type_attributes_some: ProductTypeAttributeWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  product_type_attributes_none: ProductTypeAttributeWhereInput
-
-  """
-   condition must be true for all nodes
-  """
-  products_every: ProductWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  products_some: ProductWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  products_none: ProductWhereInput
-}
-
-input ProductTypeWhereUniqueInput {
-  id: ID
-}
-
-enum SortProductTypesBy {
-  id_ASC
-  id_DESC
-  created_at_ASC
-  created_at_DESC
-  updated_at_ASC
-  updated_at_DESC
-  deleted_at_ASC
-  deleted_at_DESC
-  is_deleted_ASC
-  is_deleted_DESC
-  product_type_name_ASC
-  product_type_name_DESC
-}
-
-input ProductTypeOrderByInput {
-  id: OrderDirection
-  created_at: OrderDirection
-  updated_at: OrderDirection
-  deleted_at: OrderDirection
-  is_deleted: OrderDirection
-  product_type_name: OrderDirection
-}
-
-input ProductTypeUpdateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  product_type_name: String
-  product_type_attributes: ProductTypeAttributeRelateToManyInput
-  products: ProductRelateToManyInput
-}
-
-input ProductTypeAttributeRelateToManyInput {
-  create: [ProductTypeAttributeCreateInput]
-  connect: [ProductTypeAttributeWhereUniqueInput]
-  disconnect: [ProductTypeAttributeWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input ProductTypesUpdateInput {
-  id: ID!
-  data: ProductTypeUpdateInput
-}
-
-input ProductTypeCreateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  product_type_name: String
-  product_type_attributes: ProductTypeAttributeRelateToManyInput
-  products: ProductRelateToManyInput
-}
-
-input ProductTypesCreateInput {
-  data: ProductTypeCreateInput
-}
-
-"""
- A keystone list
-"""
-type ProductAttribute {
-  id: ID!
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  size: String
-  material: String
-  color: String
-  dimensions: String
-  weight: String
-  packaging: String
-  design: String
-  product: Product
-}
-
-input ProductAttributeWhereInput {
-  AND: [ProductAttributeWhereInput!]
-  OR: [ProductAttributeWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  created_at: String
-  created_at_not: String
-  created_at_lt: String
-  created_at_lte: String
-  created_at_gt: String
-  created_at_gte: String
-  created_at_in: [String]
-  created_at_not_in: [String]
-  updated_at: String
-  updated_at_not: String
-  updated_at_lt: String
-  updated_at_lte: String
-  updated_at_gt: String
-  updated_at_gte: String
-  updated_at_in: [String]
-  updated_at_not_in: [String]
-  deleted_at: String
-  deleted_at_not: String
-  deleted_at_lt: String
-  deleted_at_lte: String
-  deleted_at_gt: String
-  deleted_at_gte: String
-  deleted_at_in: [String]
-  deleted_at_not_in: [String]
-  is_deleted: String
-  is_deleted_not: String
-  is_deleted_contains: String
-  is_deleted_not_contains: String
-  is_deleted_starts_with: String
-  is_deleted_not_starts_with: String
-  is_deleted_ends_with: String
-  is_deleted_not_ends_with: String
-  is_deleted_i: String
-  is_deleted_not_i: String
-  is_deleted_contains_i: String
-  is_deleted_not_contains_i: String
-  is_deleted_starts_with_i: String
-  is_deleted_not_starts_with_i: String
-  is_deleted_ends_with_i: String
-  is_deleted_not_ends_with_i: String
-  is_deleted_in: [String]
-  is_deleted_not_in: [String]
-  size: String
-  size_not: String
-  size_contains: String
-  size_not_contains: String
-  size_starts_with: String
-  size_not_starts_with: String
-  size_ends_with: String
-  size_not_ends_with: String
-  size_i: String
-  size_not_i: String
-  size_contains_i: String
-  size_not_contains_i: String
-  size_starts_with_i: String
-  size_not_starts_with_i: String
-  size_ends_with_i: String
-  size_not_ends_with_i: String
-  size_in: [String]
-  size_not_in: [String]
-  material: String
-  material_not: String
-  material_contains: String
-  material_not_contains: String
-  material_starts_with: String
-  material_not_starts_with: String
-  material_ends_with: String
-  material_not_ends_with: String
-  material_i: String
-  material_not_i: String
-  material_contains_i: String
-  material_not_contains_i: String
-  material_starts_with_i: String
-  material_not_starts_with_i: String
-  material_ends_with_i: String
-  material_not_ends_with_i: String
-  material_in: [String]
-  material_not_in: [String]
-  color: String
-  color_not: String
-  color_contains: String
-  color_not_contains: String
-  color_starts_with: String
-  color_not_starts_with: String
-  color_ends_with: String
-  color_not_ends_with: String
-  color_i: String
-  color_not_i: String
-  color_contains_i: String
-  color_not_contains_i: String
-  color_starts_with_i: String
-  color_not_starts_with_i: String
-  color_ends_with_i: String
-  color_not_ends_with_i: String
-  color_in: [String]
-  color_not_in: [String]
-  dimensions: String
-  dimensions_not: String
-  dimensions_contains: String
-  dimensions_not_contains: String
-  dimensions_starts_with: String
-  dimensions_not_starts_with: String
-  dimensions_ends_with: String
-  dimensions_not_ends_with: String
-  dimensions_i: String
-  dimensions_not_i: String
-  dimensions_contains_i: String
-  dimensions_not_contains_i: String
-  dimensions_starts_with_i: String
-  dimensions_not_starts_with_i: String
-  dimensions_ends_with_i: String
-  dimensions_not_ends_with_i: String
-  dimensions_in: [String]
-  dimensions_not_in: [String]
-  weight: String
-  weight_not: String
-  weight_lt: String
-  weight_lte: String
-  weight_gt: String
-  weight_gte: String
-  packaging: String
-  packaging_not: String
-  packaging_contains: String
-  packaging_not_contains: String
-  packaging_starts_with: String
-  packaging_not_starts_with: String
-  packaging_ends_with: String
-  packaging_not_ends_with: String
-  packaging_i: String
-  packaging_not_i: String
-  packaging_contains_i: String
-  packaging_not_contains_i: String
-  packaging_starts_with_i: String
-  packaging_not_starts_with_i: String
-  packaging_ends_with_i: String
-  packaging_not_ends_with_i: String
-  packaging_in: [String]
-  packaging_not_in: [String]
-  design: String
-  design_not: String
-  design_contains: String
-  design_not_contains: String
-  design_starts_with: String
-  design_not_starts_with: String
-  design_ends_with: String
-  design_not_ends_with: String
-  design_i: String
-  design_not_i: String
-  design_contains_i: String
-  design_not_contains_i: String
-  design_starts_with_i: String
-  design_not_starts_with_i: String
-  design_ends_with_i: String
-  design_not_ends_with_i: String
-  design_in: [String]
-  design_not_in: [String]
-  product: ProductWhereInput
-  product_is_null: Boolean
-}
-
-input ProductAttributeWhereUniqueInput {
-  id: ID
-}
-
-enum SortProductAttributesBy {
-  id_ASC
-  id_DESC
-  created_at_ASC
-  created_at_DESC
-  updated_at_ASC
-  updated_at_DESC
-  deleted_at_ASC
-  deleted_at_DESC
-  is_deleted_ASC
-  is_deleted_DESC
-  size_ASC
-  size_DESC
-  material_ASC
-  material_DESC
-  color_ASC
-  color_DESC
-  dimensions_ASC
-  dimensions_DESC
-  weight_ASC
-  weight_DESC
-  packaging_ASC
-  packaging_DESC
-  design_ASC
-  design_DESC
-}
-
-input ProductAttributeOrderByInput {
-  id: OrderDirection
-  created_at: OrderDirection
-  updated_at: OrderDirection
-  deleted_at: OrderDirection
-  is_deleted: OrderDirection
-  size: OrderDirection
-  material: OrderDirection
-  color: OrderDirection
-  dimensions: OrderDirection
-  weight: OrderDirection
-  packaging: OrderDirection
-  design: OrderDirection
-}
-
-input ProductAttributeUpdateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  size: String
-  material: String
-  color: String
-  dimensions: String
-  weight: String
-  packaging: String
-  design: String
-  product: ProductRelateToOneInput
-}
-
-input ProductAttributesUpdateInput {
-  id: ID!
-  data: ProductAttributeUpdateInput
-}
-
-input ProductAttributeCreateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  size: String
-  material: String
-  color: String
-  dimensions: String
-  weight: String
-  packaging: String
-  design: String
-  product: ProductRelateToOneInput
-}
-
-input ProductAttributesCreateInput {
-  data: ProductAttributeCreateInput
-}
-
-"""
- A keystone list
-"""
-type AttributeType {
-  id: ID!
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  attribute(
-    where: AttributeWhereInput! = {}
-    search: String
-    sortBy: [SortAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Attribute!]
-  _attributeMeta(
-    where: AttributeWhereInput! = {}
-    search: String
-    sortBy: [SortAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use attributeCount instead."
-    )
-  attributeCount(where: AttributeWhereInput! = {}): Int
-  attribute_type: String
-}
-
-input AttributeTypeWhereInput {
-  AND: [AttributeTypeWhereInput!]
-  OR: [AttributeTypeWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  created_at: String
-  created_at_not: String
-  created_at_lt: String
-  created_at_lte: String
-  created_at_gt: String
-  created_at_gte: String
-  created_at_in: [String]
-  created_at_not_in: [String]
-  updated_at: String
-  updated_at_not: String
-  updated_at_lt: String
-  updated_at_lte: String
-  updated_at_gt: String
-  updated_at_gte: String
-  updated_at_in: [String]
-  updated_at_not_in: [String]
-  deleted_at: String
-  deleted_at_not: String
-  deleted_at_lt: String
-  deleted_at_lte: String
-  deleted_at_gt: String
-  deleted_at_gte: String
-  deleted_at_in: [String]
-  deleted_at_not_in: [String]
-  is_deleted: String
-  is_deleted_not: String
-  is_deleted_contains: String
-  is_deleted_not_contains: String
-  is_deleted_starts_with: String
-  is_deleted_not_starts_with: String
-  is_deleted_ends_with: String
-  is_deleted_not_ends_with: String
-  is_deleted_i: String
-  is_deleted_not_i: String
-  is_deleted_contains_i: String
-  is_deleted_not_contains_i: String
-  is_deleted_starts_with_i: String
-  is_deleted_not_starts_with_i: String
-  is_deleted_ends_with_i: String
-  is_deleted_not_ends_with_i: String
-  is_deleted_in: [String]
-  is_deleted_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
-  attribute_every: AttributeWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  attribute_some: AttributeWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  attribute_none: AttributeWhereInput
-  attribute_type: String
-  attribute_type_not: String
-  attribute_type_in: [String]
-  attribute_type_not_in: [String]
-}
-
-input AttributeTypeWhereUniqueInput {
-  id: ID
-}
-
-enum SortAttributeTypesBy {
-  id_ASC
-  id_DESC
-  created_at_ASC
-  created_at_DESC
-  updated_at_ASC
-  updated_at_DESC
-  deleted_at_ASC
-  deleted_at_DESC
-  is_deleted_ASC
-  is_deleted_DESC
-  attribute_type_ASC
-  attribute_type_DESC
-}
-
-input AttributeTypeOrderByInput {
-  id: OrderDirection
-  created_at: OrderDirection
-  updated_at: OrderDirection
-  deleted_at: OrderDirection
-  is_deleted: OrderDirection
-  attribute_type: OrderDirection
-}
-
-input AttributeTypeUpdateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  attribute: AttributeRelateToManyInput
-  attribute_type: String
-}
-
-input AttributeRelateToManyInput {
-  create: [AttributeCreateInput]
-  connect: [AttributeWhereUniqueInput]
-  disconnect: [AttributeWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input AttributeTypesUpdateInput {
-  id: ID!
-  data: AttributeTypeUpdateInput
-}
-
-input AttributeTypeCreateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  attribute: AttributeRelateToManyInput
-  attribute_type: String
-}
-
-input AttributeTypesCreateInput {
-  data: AttributeTypeCreateInput
-}
-
-"""
- A keystone list
-"""
-type ProductTypeAttribute {
-  id: ID!
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  product_type(
-    where: ProductTypeWhereInput! = {}
-    search: String
-    sortBy: [SortProductTypesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductTypeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [ProductType!]
-  _product_typeMeta(
-    where: ProductTypeWhereInput! = {}
-    search: String
-    sortBy: [SortProductTypesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductTypeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use product_typeCount instead."
-    )
-  product_typeCount(where: ProductTypeWhereInput! = {}): Int
-  attribute: Attribute
-}
-
-input ProductTypeAttributeWhereInput {
-  AND: [ProductTypeAttributeWhereInput!]
-  OR: [ProductTypeAttributeWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  created_at: String
-  created_at_not: String
-  created_at_lt: String
-  created_at_lte: String
-  created_at_gt: String
-  created_at_gte: String
-  created_at_in: [String]
-  created_at_not_in: [String]
-  updated_at: String
-  updated_at_not: String
-  updated_at_lt: String
-  updated_at_lte: String
-  updated_at_gt: String
-  updated_at_gte: String
-  updated_at_in: [String]
-  updated_at_not_in: [String]
-  deleted_at: String
-  deleted_at_not: String
-  deleted_at_lt: String
-  deleted_at_lte: String
-  deleted_at_gt: String
-  deleted_at_gte: String
-  deleted_at_in: [String]
-  deleted_at_not_in: [String]
-  is_deleted: String
-  is_deleted_not: String
-  is_deleted_contains: String
-  is_deleted_not_contains: String
-  is_deleted_starts_with: String
-  is_deleted_not_starts_with: String
-  is_deleted_ends_with: String
-  is_deleted_not_ends_with: String
-  is_deleted_i: String
-  is_deleted_not_i: String
-  is_deleted_contains_i: String
-  is_deleted_not_contains_i: String
-  is_deleted_starts_with_i: String
-  is_deleted_not_starts_with_i: String
-  is_deleted_ends_with_i: String
-  is_deleted_not_ends_with_i: String
-  is_deleted_in: [String]
-  is_deleted_not_in: [String]
-
-  """
-   condition must be true for all nodes
-  """
-  product_type_every: ProductTypeWhereInput
-
-  """
-   condition must be true for at least 1 node
-  """
-  product_type_some: ProductTypeWhereInput
-
-  """
-   condition must be false for all nodes
-  """
-  product_type_none: ProductTypeWhereInput
-  attribute: AttributeWhereInput
-  attribute_is_null: Boolean
-}
-
-input ProductTypeAttributeWhereUniqueInput {
-  id: ID
-}
-
-enum SortProductTypeAttributesBy {
-  id_ASC
-  id_DESC
-  created_at_ASC
-  created_at_DESC
-  updated_at_ASC
-  updated_at_DESC
-  deleted_at_ASC
-  deleted_at_DESC
-  is_deleted_ASC
-  is_deleted_DESC
-}
-
-input ProductTypeAttributeOrderByInput {
-  id: OrderDirection
-  created_at: OrderDirection
-  updated_at: OrderDirection
-  deleted_at: OrderDirection
-  is_deleted: OrderDirection
-}
-
-input ProductTypeAttributeUpdateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  product_type: ProductTypeRelateToManyInput
-  attribute: AttributeRelateToOneInput
-}
-
-input ProductTypeRelateToManyInput {
-  create: [ProductTypeCreateInput]
-  connect: [ProductTypeWhereUniqueInput]
-  disconnect: [ProductTypeWhereUniqueInput]
-  disconnectAll: Boolean
-}
-
-input AttributeRelateToOneInput {
-  create: AttributeCreateInput
-  connect: AttributeWhereUniqueInput
-  disconnect: AttributeWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input ProductTypeAttributesUpdateInput {
-  id: ID!
-  data: ProductTypeAttributeUpdateInput
-}
-
-input ProductTypeAttributeCreateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  product_type: ProductTypeRelateToManyInput
-  attribute: AttributeRelateToOneInput
-}
-
-input ProductTypeAttributesCreateInput {
-  data: ProductTypeAttributeCreateInput
-}
-
-"""
- A keystone list
-"""
 type PaymentMethod {
   id: ID!
   created_at: String
@@ -3905,156 +3120,6 @@ input AddressesCreateInput {
 """
  A keystone list
 """
-type Attribute {
-  id: ID!
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  attribute_type: AttributeType
-  attribute: String
-}
-
-input AttributeWhereInput {
-  AND: [AttributeWhereInput!]
-  OR: [AttributeWhereInput!]
-  id: ID
-  id_not: ID
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_in: [ID]
-  id_not_in: [ID]
-  created_at: String
-  created_at_not: String
-  created_at_lt: String
-  created_at_lte: String
-  created_at_gt: String
-  created_at_gte: String
-  created_at_in: [String]
-  created_at_not_in: [String]
-  updated_at: String
-  updated_at_not: String
-  updated_at_lt: String
-  updated_at_lte: String
-  updated_at_gt: String
-  updated_at_gte: String
-  updated_at_in: [String]
-  updated_at_not_in: [String]
-  deleted_at: String
-  deleted_at_not: String
-  deleted_at_lt: String
-  deleted_at_lte: String
-  deleted_at_gt: String
-  deleted_at_gte: String
-  deleted_at_in: [String]
-  deleted_at_not_in: [String]
-  is_deleted: String
-  is_deleted_not: String
-  is_deleted_contains: String
-  is_deleted_not_contains: String
-  is_deleted_starts_with: String
-  is_deleted_not_starts_with: String
-  is_deleted_ends_with: String
-  is_deleted_not_ends_with: String
-  is_deleted_i: String
-  is_deleted_not_i: String
-  is_deleted_contains_i: String
-  is_deleted_not_contains_i: String
-  is_deleted_starts_with_i: String
-  is_deleted_not_starts_with_i: String
-  is_deleted_ends_with_i: String
-  is_deleted_not_ends_with_i: String
-  is_deleted_in: [String]
-  is_deleted_not_in: [String]
-  attribute_type: AttributeTypeWhereInput
-  attribute_type_is_null: Boolean
-  attribute: String
-  attribute_not: String
-  attribute_contains: String
-  attribute_not_contains: String
-  attribute_starts_with: String
-  attribute_not_starts_with: String
-  attribute_ends_with: String
-  attribute_not_ends_with: String
-  attribute_i: String
-  attribute_not_i: String
-  attribute_contains_i: String
-  attribute_not_contains_i: String
-  attribute_starts_with_i: String
-  attribute_not_starts_with_i: String
-  attribute_ends_with_i: String
-  attribute_not_ends_with_i: String
-  attribute_in: [String]
-  attribute_not_in: [String]
-}
-
-input AttributeWhereUniqueInput {
-  id: ID
-}
-
-enum SortAttributesBy {
-  id_ASC
-  id_DESC
-  created_at_ASC
-  created_at_DESC
-  updated_at_ASC
-  updated_at_DESC
-  deleted_at_ASC
-  deleted_at_DESC
-  is_deleted_ASC
-  is_deleted_DESC
-  attribute_ASC
-  attribute_DESC
-}
-
-input AttributeOrderByInput {
-  id: OrderDirection
-  created_at: OrderDirection
-  updated_at: OrderDirection
-  deleted_at: OrderDirection
-  is_deleted: OrderDirection
-  attribute: OrderDirection
-}
-
-input AttributeUpdateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  attribute_type: AttributeTypeRelateToOneInput
-  attribute: String
-}
-
-input AttributeTypeRelateToOneInput {
-  create: AttributeTypeCreateInput
-  connect: AttributeTypeWhereUniqueInput
-  disconnect: AttributeTypeWhereUniqueInput
-  disconnectAll: Boolean
-}
-
-input AttributesUpdateInput {
-  id: ID!
-  data: AttributeUpdateInput
-}
-
-input AttributeCreateInput {
-  created_at: String
-  updated_at: String
-  deleted_at: String
-  is_deleted: String
-  attribute_type: AttributeTypeRelateToOneInput
-  attribute: String
-}
-
-input AttributesCreateInput {
-  data: AttributeCreateInput
-}
-
-"""
- A keystone list
-"""
 type ProductSku {
   id: ID!
   created_at: String
@@ -4455,6 +3520,351 @@ input ProductSkuAttributesCreateInput {
 }
 
 """
+ A keystone list
+"""
+type ProductImage {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  image: ImageFieldOutput
+  alt_text: String
+  image_type: String
+  product: Product
+}
+
+type LocalImageFieldOutput implements ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  ref: String!
+  src: String!
+}
+
+input ProductImageWhereInput {
+  AND: [ProductImageWhereInput!]
+  OR: [ProductImageWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  alt_text: String
+  alt_text_not: String
+  alt_text_contains: String
+  alt_text_not_contains: String
+  alt_text_starts_with: String
+  alt_text_not_starts_with: String
+  alt_text_ends_with: String
+  alt_text_not_ends_with: String
+  alt_text_i: String
+  alt_text_not_i: String
+  alt_text_contains_i: String
+  alt_text_not_contains_i: String
+  alt_text_starts_with_i: String
+  alt_text_not_starts_with_i: String
+  alt_text_ends_with_i: String
+  alt_text_not_ends_with_i: String
+  alt_text_in: [String]
+  alt_text_not_in: [String]
+  image_type: String
+  image_type_not: String
+  image_type_contains: String
+  image_type_not_contains: String
+  image_type_starts_with: String
+  image_type_not_starts_with: String
+  image_type_ends_with: String
+  image_type_not_ends_with: String
+  image_type_i: String
+  image_type_not_i: String
+  image_type_contains_i: String
+  image_type_not_contains_i: String
+  image_type_starts_with_i: String
+  image_type_not_starts_with_i: String
+  image_type_ends_with_i: String
+  image_type_not_ends_with_i: String
+  image_type_in: [String]
+  image_type_not_in: [String]
+  product: ProductWhereInput
+  product_is_null: Boolean
+}
+
+input ProductImageWhereUniqueInput {
+  id: ID
+}
+
+enum SortProductImagesBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  alt_text_ASC
+  alt_text_DESC
+  image_type_ASC
+  image_type_DESC
+}
+
+input ProductImageOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  alt_text: OrderDirection
+  image_type: OrderDirection
+}
+
+input ProductImageUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  image: ImageFieldInput
+  alt_text: String
+  image_type: String
+  product: ProductRelateToOneInput
+}
+
+input ProductImagesUpdateInput {
+  id: ID!
+  data: ProductImageUpdateInput
+}
+
+input ProductImageCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  image: ImageFieldInput
+  alt_text: String
+  image_type: String
+  product: ProductRelateToOneInput
+}
+
+input ProductImagesCreateInput {
+  data: ProductImageCreateInput
+}
+
+"""
+ A keystone list
+"""
+type ProductVideo {
+  id: ID!
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  video: FileFieldOutput
+  video_type: String
+  product: Product
+}
+
+interface FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+type LocalFileFieldOutput implements FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  ref: String!
+  src: String!
+}
+
+input ProductVideoWhereInput {
+  AND: [ProductVideoWhereInput!]
+  OR: [ProductVideoWhereInput!]
+  id: ID
+  id_not: ID
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_in: [ID]
+  id_not_in: [ID]
+  created_at: String
+  created_at_not: String
+  created_at_lt: String
+  created_at_lte: String
+  created_at_gt: String
+  created_at_gte: String
+  created_at_in: [String]
+  created_at_not_in: [String]
+  updated_at: String
+  updated_at_not: String
+  updated_at_lt: String
+  updated_at_lte: String
+  updated_at_gt: String
+  updated_at_gte: String
+  updated_at_in: [String]
+  updated_at_not_in: [String]
+  deleted_at: String
+  deleted_at_not: String
+  deleted_at_lt: String
+  deleted_at_lte: String
+  deleted_at_gt: String
+  deleted_at_gte: String
+  deleted_at_in: [String]
+  deleted_at_not_in: [String]
+  is_deleted: String
+  is_deleted_not: String
+  is_deleted_contains: String
+  is_deleted_not_contains: String
+  is_deleted_starts_with: String
+  is_deleted_not_starts_with: String
+  is_deleted_ends_with: String
+  is_deleted_not_ends_with: String
+  is_deleted_i: String
+  is_deleted_not_i: String
+  is_deleted_contains_i: String
+  is_deleted_not_contains_i: String
+  is_deleted_starts_with_i: String
+  is_deleted_not_starts_with_i: String
+  is_deleted_ends_with_i: String
+  is_deleted_not_ends_with_i: String
+  is_deleted_in: [String]
+  is_deleted_not_in: [String]
+  video_type: String
+  video_type_not: String
+  video_type_contains: String
+  video_type_not_contains: String
+  video_type_starts_with: String
+  video_type_not_starts_with: String
+  video_type_ends_with: String
+  video_type_not_ends_with: String
+  video_type_i: String
+  video_type_not_i: String
+  video_type_contains_i: String
+  video_type_not_contains_i: String
+  video_type_starts_with_i: String
+  video_type_not_starts_with_i: String
+  video_type_ends_with_i: String
+  video_type_not_ends_with_i: String
+  video_type_in: [String]
+  video_type_not_in: [String]
+  product: ProductWhereInput
+  product_is_null: Boolean
+}
+
+input ProductVideoWhereUniqueInput {
+  id: ID
+}
+
+enum SortProductVideosBy {
+  id_ASC
+  id_DESC
+  created_at_ASC
+  created_at_DESC
+  updated_at_ASC
+  updated_at_DESC
+  deleted_at_ASC
+  deleted_at_DESC
+  is_deleted_ASC
+  is_deleted_DESC
+  video_type_ASC
+  video_type_DESC
+}
+
+input ProductVideoOrderByInput {
+  id: OrderDirection
+  created_at: OrderDirection
+  updated_at: OrderDirection
+  deleted_at: OrderDirection
+  is_deleted: OrderDirection
+  video_type: OrderDirection
+}
+
+input ProductVideoUpdateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  video: FileFieldInput
+  video_type: String
+  product: ProductRelateToOneInput
+}
+
+input FileFieldInput {
+  upload: Upload
+  ref: String
+}
+
+input ProductVideosUpdateInput {
+  id: ID!
+  data: ProductVideoUpdateInput
+}
+
+input ProductVideoCreateInput {
+  created_at: String
+  updated_at: String
+  deleted_at: String
+  is_deleted: String
+  video: FileFieldInput
+  video_type: String
+  product: ProductRelateToOneInput
+}
+
+input ProductVideosCreateInput {
+  data: ProductVideoCreateInput
+}
+
+"""
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
@@ -4794,142 +4204,6 @@ type Mutation {
   deleteDiscounts(ids: [ID!]): [Discount]
 
   """
-   Create a single ProductType item.
-  """
-  createProductType(data: ProductTypeCreateInput): ProductType
-
-  """
-   Create multiple ProductType items.
-  """
-  createProductTypes(data: [ProductTypesCreateInput]): [ProductType]
-
-  """
-   Update a single ProductType item by ID.
-  """
-  updateProductType(id: ID!, data: ProductTypeUpdateInput): ProductType
-
-  """
-   Update multiple ProductType items by ID.
-  """
-  updateProductTypes(data: [ProductTypesUpdateInput]): [ProductType]
-
-  """
-   Delete a single ProductType item by ID.
-  """
-  deleteProductType(id: ID!): ProductType
-
-  """
-   Delete multiple ProductType items by ID.
-  """
-  deleteProductTypes(ids: [ID!]): [ProductType]
-
-  """
-   Create a single ProductAttribute item.
-  """
-  createProductAttribute(data: ProductAttributeCreateInput): ProductAttribute
-
-  """
-   Create multiple ProductAttribute items.
-  """
-  createProductAttributes(
-    data: [ProductAttributesCreateInput]
-  ): [ProductAttribute]
-
-  """
-   Update a single ProductAttribute item by ID.
-  """
-  updateProductAttribute(
-    id: ID!
-    data: ProductAttributeUpdateInput
-  ): ProductAttribute
-
-  """
-   Update multiple ProductAttribute items by ID.
-  """
-  updateProductAttributes(
-    data: [ProductAttributesUpdateInput]
-  ): [ProductAttribute]
-
-  """
-   Delete a single ProductAttribute item by ID.
-  """
-  deleteProductAttribute(id: ID!): ProductAttribute
-
-  """
-   Delete multiple ProductAttribute items by ID.
-  """
-  deleteProductAttributes(ids: [ID!]): [ProductAttribute]
-
-  """
-   Create a single AttributeType item.
-  """
-  createAttributeType(data: AttributeTypeCreateInput): AttributeType
-
-  """
-   Create multiple AttributeType items.
-  """
-  createAttributeTypes(data: [AttributeTypesCreateInput]): [AttributeType]
-
-  """
-   Update a single AttributeType item by ID.
-  """
-  updateAttributeType(id: ID!, data: AttributeTypeUpdateInput): AttributeType
-
-  """
-   Update multiple AttributeType items by ID.
-  """
-  updateAttributeTypes(data: [AttributeTypesUpdateInput]): [AttributeType]
-
-  """
-   Delete a single AttributeType item by ID.
-  """
-  deleteAttributeType(id: ID!): AttributeType
-
-  """
-   Delete multiple AttributeType items by ID.
-  """
-  deleteAttributeTypes(ids: [ID!]): [AttributeType]
-
-  """
-   Create a single ProductTypeAttribute item.
-  """
-  createProductTypeAttribute(
-    data: ProductTypeAttributeCreateInput
-  ): ProductTypeAttribute
-
-  """
-   Create multiple ProductTypeAttribute items.
-  """
-  createProductTypeAttributes(
-    data: [ProductTypeAttributesCreateInput]
-  ): [ProductTypeAttribute]
-
-  """
-   Update a single ProductTypeAttribute item by ID.
-  """
-  updateProductTypeAttribute(
-    id: ID!
-    data: ProductTypeAttributeUpdateInput
-  ): ProductTypeAttribute
-
-  """
-   Update multiple ProductTypeAttribute items by ID.
-  """
-  updateProductTypeAttributes(
-    data: [ProductTypeAttributesUpdateInput]
-  ): [ProductTypeAttribute]
-
-  """
-   Delete a single ProductTypeAttribute item by ID.
-  """
-  deleteProductTypeAttribute(id: ID!): ProductTypeAttribute
-
-  """
-   Delete multiple ProductTypeAttribute items by ID.
-  """
-  deleteProductTypeAttributes(ids: [ID!]): [ProductTypeAttribute]
-
-  """
    Create a single PaymentMethod item.
   """
   createPaymentMethod(data: PaymentMethodCreateInput): PaymentMethod
@@ -4988,36 +4262,6 @@ type Mutation {
    Delete multiple Address items by ID.
   """
   deleteAddresses(ids: [ID!]): [Address]
-
-  """
-   Create a single Attribute item.
-  """
-  createAttribute(data: AttributeCreateInput): Attribute
-
-  """
-   Create multiple Attribute items.
-  """
-  createAttributes(data: [AttributesCreateInput]): [Attribute]
-
-  """
-   Update a single Attribute item by ID.
-  """
-  updateAttribute(id: ID!, data: AttributeUpdateInput): Attribute
-
-  """
-   Update multiple Attribute items by ID.
-  """
-  updateAttributes(data: [AttributesUpdateInput]): [Attribute]
-
-  """
-   Delete a single Attribute item by ID.
-  """
-  deleteAttribute(id: ID!): Attribute
-
-  """
-   Delete multiple Attribute items by ID.
-  """
-  deleteAttributes(ids: [ID!]): [Attribute]
 
   """
    Create a single ProductSku item.
@@ -5087,6 +4331,66 @@ type Mutation {
    Delete multiple ProductSkuAttribute items by ID.
   """
   deleteProductSkuAttributes(ids: [ID!]): [ProductSkuAttribute]
+
+  """
+   Create a single ProductImage item.
+  """
+  createProductImage(data: ProductImageCreateInput): ProductImage
+
+  """
+   Create multiple ProductImage items.
+  """
+  createProductImages(data: [ProductImagesCreateInput]): [ProductImage]
+
+  """
+   Update a single ProductImage item by ID.
+  """
+  updateProductImage(id: ID!, data: ProductImageUpdateInput): ProductImage
+
+  """
+   Update multiple ProductImage items by ID.
+  """
+  updateProductImages(data: [ProductImagesUpdateInput]): [ProductImage]
+
+  """
+   Delete a single ProductImage item by ID.
+  """
+  deleteProductImage(id: ID!): ProductImage
+
+  """
+   Delete multiple ProductImage items by ID.
+  """
+  deleteProductImages(ids: [ID!]): [ProductImage]
+
+  """
+   Create a single ProductVideo item.
+  """
+  createProductVideo(data: ProductVideoCreateInput): ProductVideo
+
+  """
+   Create multiple ProductVideo items.
+  """
+  createProductVideos(data: [ProductVideosCreateInput]): [ProductVideo]
+
+  """
+   Update a single ProductVideo item by ID.
+  """
+  updateProductVideo(id: ID!, data: ProductVideoUpdateInput): ProductVideo
+
+  """
+   Update multiple ProductVideo items by ID.
+  """
+  updateProductVideos(data: [ProductVideosUpdateInput]): [ProductVideo]
+
+  """
+   Delete a single ProductVideo item by ID.
+  """
+  deleteProductVideo(id: ID!): ProductVideo
+
+  """
+   Delete multiple ProductVideo items by ID.
+  """
+  deleteProductVideos(ids: [ID!]): [ProductVideo]
   authenticateUserWithPassword(
     email: String!
     password: String!
@@ -5514,148 +4818,6 @@ type Query {
   discountsCount(where: DiscountWhereInput! = {}): Int
 
   """
-   Search for all ProductType items which match the where clause.
-  """
-  allProductTypes(
-    where: ProductTypeWhereInput! = {}
-    search: String
-    sortBy: [SortProductTypesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductTypeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [ProductType!]
-
-  """
-   Search for the ProductType item with the matching ID.
-  """
-  ProductType(where: ProductTypeWhereUniqueInput!): ProductType
-
-  """
-   Perform a meta-query on all ProductType items which match the where clause.
-  """
-  _allProductTypesMeta(
-    where: ProductTypeWhereInput! = {}
-    search: String
-    sortBy: [SortProductTypesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductTypeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productTypesCount instead."
-    )
-  productTypesCount(where: ProductTypeWhereInput! = {}): Int
-
-  """
-   Search for all ProductAttribute items which match the where clause.
-  """
-  allProductAttributes(
-    where: ProductAttributeWhereInput! = {}
-    search: String
-    sortBy: [SortProductAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductAttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [ProductAttribute!]
-
-  """
-   Search for the ProductAttribute item with the matching ID.
-  """
-  ProductAttribute(where: ProductAttributeWhereUniqueInput!): ProductAttribute
-
-  """
-   Perform a meta-query on all ProductAttribute items which match the where clause.
-  """
-  _allProductAttributesMeta(
-    where: ProductAttributeWhereInput! = {}
-    search: String
-    sortBy: [SortProductAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductAttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productAttributesCount instead."
-    )
-  productAttributesCount(where: ProductAttributeWhereInput! = {}): Int
-
-  """
-   Search for all AttributeType items which match the where clause.
-  """
-  allAttributeTypes(
-    where: AttributeTypeWhereInput! = {}
-    search: String
-    sortBy: [SortAttributeTypesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AttributeTypeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [AttributeType!]
-
-  """
-   Search for the AttributeType item with the matching ID.
-  """
-  AttributeType(where: AttributeTypeWhereUniqueInput!): AttributeType
-
-  """
-   Perform a meta-query on all AttributeType items which match the where clause.
-  """
-  _allAttributeTypesMeta(
-    where: AttributeTypeWhereInput! = {}
-    search: String
-    sortBy: [SortAttributeTypesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AttributeTypeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use attributeTypesCount instead."
-    )
-  attributeTypesCount(where: AttributeTypeWhereInput! = {}): Int
-
-  """
-   Search for all ProductTypeAttribute items which match the where clause.
-  """
-  allProductTypeAttributes(
-    where: ProductTypeAttributeWhereInput! = {}
-    search: String
-    sortBy: [SortProductTypeAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductTypeAttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [ProductTypeAttribute!]
-
-  """
-   Search for the ProductTypeAttribute item with the matching ID.
-  """
-  ProductTypeAttribute(
-    where: ProductTypeAttributeWhereUniqueInput!
-  ): ProductTypeAttribute
-
-  """
-   Perform a meta-query on all ProductTypeAttribute items which match the where clause.
-  """
-  _allProductTypeAttributesMeta(
-    where: ProductTypeAttributeWhereInput! = {}
-    search: String
-    sortBy: [SortProductTypeAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [ProductTypeAttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use productTypeAttributesCount instead."
-    )
-  productTypeAttributesCount(where: ProductTypeAttributeWhereInput! = {}): Int
-
-  """
    Search for all PaymentMethod items which match the where clause.
   """
   allPaymentMethods(
@@ -5724,41 +4886,6 @@ type Query {
       reason: "This query will be removed in a future version. Please use addressesCount instead."
     )
   addressesCount(where: AddressWhereInput! = {}): Int
-
-  """
-   Search for all Attribute items which match the where clause.
-  """
-  allAttributes(
-    where: AttributeWhereInput! = {}
-    search: String
-    sortBy: [SortAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): [Attribute!]
-
-  """
-   Search for the Attribute item with the matching ID.
-  """
-  Attribute(where: AttributeWhereUniqueInput!): Attribute
-
-  """
-   Perform a meta-query on all Attribute items which match the where clause.
-  """
-  _allAttributesMeta(
-    where: AttributeWhereInput! = {}
-    search: String
-    sortBy: [SortAttributesBy!]
-      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
-    orderBy: [AttributeOrderByInput!]! = []
-    first: Int
-    skip: Int! = 0
-  ): _QueryMeta
-    @deprecated(
-      reason: "This query will be removed in a future version. Please use attributesCount instead."
-    )
-  attributesCount(where: AttributeWhereInput! = {}): Int
 
   """
    Search for all ProductSku items which match the where clause.
@@ -5831,6 +4958,76 @@ type Query {
       reason: "This query will be removed in a future version. Please use productSkuAttributesCount instead."
     )
   productSkuAttributesCount(where: ProductSkuAttributeWhereInput! = {}): Int
+
+  """
+   Search for all ProductImage items which match the where clause.
+  """
+  allProductImages(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductImage!]
+
+  """
+   Search for the ProductImage item with the matching ID.
+  """
+  ProductImage(where: ProductImageWhereUniqueInput!): ProductImage
+
+  """
+   Perform a meta-query on all ProductImage items which match the where clause.
+  """
+  _allProductImagesMeta(
+    where: ProductImageWhereInput! = {}
+    search: String
+    sortBy: [SortProductImagesBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductImageOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productImagesCount instead."
+    )
+  productImagesCount(where: ProductImageWhereInput! = {}): Int
+
+  """
+   Search for all ProductVideo items which match the where clause.
+  """
+  allProductVideos(
+    where: ProductVideoWhereInput! = {}
+    search: String
+    sortBy: [SortProductVideosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductVideoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): [ProductVideo!]
+
+  """
+   Search for the ProductVideo item with the matching ID.
+  """
+  ProductVideo(where: ProductVideoWhereUniqueInput!): ProductVideo
+
+  """
+   Perform a meta-query on all ProductVideo items which match the where clause.
+  """
+  _allProductVideosMeta(
+    where: ProductVideoWhereInput! = {}
+    search: String
+    sortBy: [SortProductVideosBy!]
+      @deprecated(reason: "sortBy has been deprecated in favour of orderBy")
+    orderBy: [ProductVideoOrderByInput!]! = []
+    first: Int
+    skip: Int! = 0
+  ): _QueryMeta
+    @deprecated(
+      reason: "This query will be removed in a future version. Please use productVideosCount instead."
+    )
+  productVideosCount(where: ProductVideoWhereInput! = {}): Int
   authenticatedItem: AuthenticatedItem
   keystone: KeystoneMeta!
 }
